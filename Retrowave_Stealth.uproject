@@ -7,7 +7,10 @@
 		{
 			"Name": "Retrowave_Stealth",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
 		}
 	]
 }
