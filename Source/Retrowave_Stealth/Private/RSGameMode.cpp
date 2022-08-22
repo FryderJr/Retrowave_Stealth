@@ -12,3 +12,8 @@ ARSGameMode::ARSGameMode()
     PlayerControllerClass = ARSPlayerController::StaticClass();
     HUDClass = ARSPlayerHUD::StaticClass();
 }
+
+void ARSGameMode::SetGameState(ERSGameState State)
+{
+    RetrowaveGameState = State;
+}
