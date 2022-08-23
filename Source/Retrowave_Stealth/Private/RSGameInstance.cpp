@@ -3,10 +3,3 @@
 
 #include "RSGameInstance.h"
 
-RSGameInstance::RSGameInstance()
-{
-}
-
-RSGameInstance::~RSGameInstance()
-{
-}

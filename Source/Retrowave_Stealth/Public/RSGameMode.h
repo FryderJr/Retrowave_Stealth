@@ -18,6 +18,9 @@ public:
     
     FOnGameStateChagedSignature OnGameStateChanged;
     
+protected:
+    virtual void StartPlay() override;
+    
 private:
     ERSGameState RetrowaveGameState = ERSGameState::WaitingToStart;
     
