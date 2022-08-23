@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "RSTypes.h"
 #include "RSPlayerController.generated.h"
 
 UCLASS()
@@ -11,4 +12,9 @@ class RETROWAVE_STEALTH_API ARSPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
+protected:
+    virtual void BeginPlay() override;
+    
+private:
+    void OnGameStateChanged(ERSGameState State);
 };
