@@ -66,23 +66,25 @@ void ARSBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
     PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ARSBaseCharacter::Jump);
     
-    //DECLARE_DELEGATE_OneParam(FOnCrouchSignature, bool);
-    PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &ARSBaseCharacter::StartCrouch);
-    PlayerInputComponent->BindAction("Crouch", IE_Released, this, &ARSBaseCharacter::StopCrouch);
+    DECLARE_DELEGATE_OneParam(FOnCrouchSignature, bool);
+    PlayerInputComponent->BindAction<FOnCrouchSignature>("Crouch", IE_Pressed, this, &ARSBaseCharacter::Crouch, true);
+    PlayerInputComponent->BindAction<FOnCrouchSignature>("Crouch", IE_Released, this, &ARSBaseCharacter::UnCrouch, true);
+    //PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &ARSBaseCharacter::StartCrouch);
+    //PlayerInputComponent->BindAction("Crouch", IE_Released, this, &ARSBaseCharacter::StopCrouch);
 }
 
 void ARSBaseCharacter::MoveForward(float Amount)
 {
     if (FMath::IsNearlyZero(Amount)) return;
 
-    AddMovementInput(FVector(1.f, 0.f, 0.f), Amount);
+    AddMovementInput(FVector(1.f, -1.f, 0.f), Amount);
 }
 
 void ARSBaseCharacter::MoveRight(float Amount)
 {
     if (FMath::IsNearlyZero(Amount)) return;
 
-    AddMovementInput(FVector(0.f, 1.f, 0.f), Amount);
+    AddMovementInput(FVector(1.f, 1.f, 0.f), Amount);
 }
 
 void ARSBaseCharacter::StartCrouch()
