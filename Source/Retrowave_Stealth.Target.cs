@@ -10,8 +10,5 @@ public class Retrowave_StealthTarget : TargetRules
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.Add("Retrowave_Stealth");
-        
-        bOverrideBuildEnvironment = true;
-        AdditionalCompilerArguments = "-Wno-unused-but-set-variable";
 	}
 }

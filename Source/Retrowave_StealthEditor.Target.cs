@@ -10,8 +10,5 @@ public class Retrowave_StealthEditorTarget : TargetRules
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.Add("Retrowave_Stealth");
-        
-        bOverrideBuildEnvironment = true;
-        AdditionalCompilerArguments = "-Wno-unused-but-set-variable";
 	}
 }
