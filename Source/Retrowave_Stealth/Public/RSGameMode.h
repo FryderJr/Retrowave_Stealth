@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "RSTypes.h"
 #include "RSGameMode.generated.h"
 
 
@@ -12,5 +13,16 @@ class RETROWAVE_STEALTH_API ARSGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
     ARSGameMode();
+    
+    FOnGameStateChagedSignature OnGameStateChanged;
+    
+protected:
+    virtual void StartPlay() override;
+    
+private:
+    ERSGameState RetrowaveGameState = ERSGameState::WaitingToStart;
+    
+    void SetGameState(ERSGameState State);
 };
