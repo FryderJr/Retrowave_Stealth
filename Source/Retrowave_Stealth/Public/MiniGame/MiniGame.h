@@ -3,20 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Row.h"
+//#include "Row.h"
 #include "Blueprint/UserWidget.h"
 #include "MiniGame.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class RETROWAVE_STEALTH_API UMiniGame : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UCanvasPanel* MatrixCanvas;
 
@@ -24,12 +20,12 @@ public:
 	class URow* Matrix;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MiniGame)
-	int FieldLength = 5;
+	int KeywordLength = 5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MiniGame)
-	FString Field = "";
+	FString Keyword = "";
 
-	TArray<TCHAR> Code;
+	//TArray<TCHAR> Code;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = MiniGame)
 	int CurrentRow = 0;
@@ -40,18 +36,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = MiniGame)
 	void PaintAll();
 
-	FString RandomChar();
-
 	UFUNCTION(BlueprintCallable, Category = MiniGame)
-	void RandomizeField();
+	void CreateKeyword();
 
 	UFUNCTION(BlueprintCallable, Category = MiniGame)
 	void RandomizeMatrix();
 
 	UFUNCTION(BlueprintCallable, Category = MiniGame)
 	void MoveField(int X, int Y);
-
-	void PlaceField();
 
 	UFUNCTION(BlueprintCallable, Category = MiniGame)
 	bool CheckField();
@@ -63,12 +55,19 @@ public:
 	void StartBlinking();
 
 private:
-
-	size_t FieldRow = 0;
-	size_t FieldColumn = 0;
+    const FString SymbolsToFill = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890`-=],./~!@#$%^&*()_+{}|:<>?";
+    
+	size_t KeywordBeginsAtRow = 0;
+	size_t KeywordBeginsAtColumn = 0;
 
 	size_t ColumnsLength = 0;
 	size_t RowsLength = 0;
 
 	FTimerHandle FBlinkTimer;
+    
+    FString RandomChar();
+    
+    void PlaceKeyword();
+    
+    void PaintRowCellsInRange(TArray<UWidget*>& CellsInRow, const uint32 Begin, const uint32 Range, const FColor& Color);
 };
