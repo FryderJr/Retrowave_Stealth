@@ -19,6 +19,26 @@ void ARSGameMode::StartPlay()
     SetGameState(ERSGameState::InProgress);
 }
 
+bool ARSGameMode::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate)
+{
+    const auto bIsPaused = Super::SetPause(PC, CanUnpauseDelegate);
+    if (bIsPaused)
+    {
+        SetGameState(ERSGameState::Pause);
+    }
+    return bIsPaused;
+}
+
+bool ARSGameMode::ClearPause()
+{
+    const auto bIsPauseClear = Super::ClearPause();
+    if (bIsPauseClear)
+    {
+        SetGameState(ERSGameState::InProgress);
+    }
+    return bIsPauseClear;
+}
+
 void ARSGameMode::SetGameState(ERSGameState State)
 {
     if (RetrowaveGameState == State) return;

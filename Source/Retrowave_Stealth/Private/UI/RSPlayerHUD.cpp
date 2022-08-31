@@ -3,10 +3,22 @@
 
 #include "UI/RSPlayerHUD.h"
 #include "RSGameMode.h"
+#include "Blueprint/UserWidget.h"
 
 void ARSPlayerHUD::BeginPlay()
 {
     Super::BeginPlay();
+    
+    GameWidgets.Add(ERSGameState::Pause, CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass));
+    
+    for (auto& GameWidgetPair : GameWidgets)
+    {
+        const auto GameWidget = GameWidgetPair.Value;
+        if (!GameWidget) continue;
+        
+        GameWidget->AddToViewport();
+        GameWidget->SetVisibility(ESlateVisibility::Hidden);
+    }
     
     if (GetWorld())
     {
@@ -18,7 +30,18 @@ void ARSPlayerHUD::BeginPlay()
     }
 }
 
-void ARSPlayerHUD::OnGameStateChanged(ERSGameState)
+void ARSPlayerHUD::OnGameStateChanged(ERSGameState State)
 {
-    
+    if (CurrentWidget)
+    {
+        CurrentWidget->SetVisibility(ESlateVisibility::Hidden);
+    }
+    if (GameWidgets.Contains(State))
+    {
+        CurrentWidget = GameWidgets[State];
+    }
+    if (CurrentWidget)
+    {
+        CurrentWidget->SetVisibility(ESlateVisibility::Visible);
+    }
 }

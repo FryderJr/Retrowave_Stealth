@@ -14,7 +14,9 @@ class RETROWAVE_STEALTH_API ARSPlayerController : public APlayerController
 	
 protected:
     virtual void BeginPlay() override;
+    virtual void SetupInputComponent() override;
     
 private:
+    void OnGamePaused();
     void OnGameStateChanged(ERSGameState State);
 };
