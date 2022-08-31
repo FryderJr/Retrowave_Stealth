@@ -2,7 +2,9 @@
 
 
 #include "RSGameMode.h"
+#include "RSGameInstance.h"
 #include "Player/RSBaseCharacter.h"
+#include "Kismet/GameplayStatics.h"
 #include "Player/RSPlayerController.h"
 #include "UI/RSPlayerHUD.h"
 
@@ -17,6 +19,22 @@ void ARSGameMode::StartPlay()
 {
     Super::StartPlay();
     SetGameState(ERSGameState::InProgress);
+}
+
+void ARSGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+    Super::InitGame(MapName, Options, ErrorMessage);
+    
+    FString SelectedSaveSlot = UGameplayStatics::ParseOption(Options, "SaveGame");
+    if (SelectedSaveSlot.Len() > 0)
+    {
+        URSGameInstance* MyGameInstance = Cast<URSGameInstance>(GetGameInstance());
+        if (!MyGameInstance)
+        {
+            return;
+        }
+        MyGameInstance->LoadGame();
+    }
 }
 
 void ARSGameMode::SetGameState(ERSGameState State)

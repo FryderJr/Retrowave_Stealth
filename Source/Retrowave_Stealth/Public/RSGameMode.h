@@ -20,6 +20,8 @@ public:
     
 protected:
     virtual void StartPlay() override;
+
+    virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
     
 private:
     ERSGameState RetrowaveGameState = ERSGameState::WaitingToStart;

@@ -14,11 +14,29 @@ class RETROWAVE_STEALTH_API URSGameInstance : public UGameInstance
 public:
     FName GetStartupLevelName() const { return StartupLevelName; };
     FName GetMenuLevelName() const { return MenuLevelName; };
+
+    UFUNCTION(BlueprintCallable, Category = "Game")
+    void SaveGame(FTransform PlayerTransform);
+
+    UFUNCTION(BlueprintCallable, Category = "Game")
+    void LoadMap();
+
+    UFUNCTION(BlueprintCallable, Category = "Game")
+    void LoadGame();
+
+    UFUNCTION()
+    void SavedGame(const FString& SlotName, const int32 UserIndex, bool bSuccess);
     
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     FName StartupLevelName = NAME_None;
-    
+
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     FName MenuLevelName = NAME_None;
+
+    UPROPERTY(VisibleAnywhere, Category = "Game")
+    FString SaveSlotName = TEXT("TestSaveGameSlot");
+    
+    UPROPERTY(VisibleAnywhere, Category = "Game")
+    FTransform PlayerLocation;
 };
