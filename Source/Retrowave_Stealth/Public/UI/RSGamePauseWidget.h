@@ -20,7 +20,13 @@ protected:
     UPROPERTY(meta = (BindWidget))
     UButton* ClearPauseButton;
     
+    UPROPERTY(meta = (BindWidget))
+    UButton* GoToMainMenuButton;
+    
 private:
     UFUNCTION()
     void OnClearPause();
+    
+    UFUNCTION()
+    void OnGoToMainMenu();
 };
