@@ -8,7 +8,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/CapsuleComponent.h"
-
+#include "Player/RSPlayerController.h"
+#include "Camera/CameraActor.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 DEFINE_LOG_CATEGORY_STATIC(RSBaseCharacter_LOG, All, All);
@@ -71,6 +72,20 @@ void ARSBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     PlayerInputComponent->BindAction<FOnCrouchSignature>("Crouch", IE_Released, this, &ARSBaseCharacter::UnCrouch, true);
     //PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &ARSBaseCharacter::StartCrouch);
     //PlayerInputComponent->BindAction("Crouch", IE_Released, this, &ARSBaseCharacter::StopCrouch);
+
+    PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ARSBaseCharacter::BeginHackTerminal);
+    PlayerInputComponent->BindAction("QuitTerminal", IE_Pressed, this, &ARSBaseCharacter::QuitTerminal);
+}
+
+void ARSBaseCharacter::CanHackTerminal(bool Enable)
+{
+    bCanHackTerminal = Enable;
+}
+
+void ARSBaseCharacter::SetCameraToView(ACameraActor* Camera)
+{
+    if (!Camera) return;
+    CurrentTerminalCamera = Camera;
 }
 
 void ARSBaseCharacter::MoveForward(float Amount)
@@ -106,5 +121,25 @@ void ARSBaseCharacter::OnCameraCollisionBeginOverlap(UPrimitiveComponent* Overla
 void ARSBaseCharacter::OnCameraCollisionEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
     //OtherComp->SetVisibility(true);
+}
+
+void ARSBaseCharacter::BeginHackTerminal()
+{
+    if (!bCanHackTerminal || !CurrentTerminalCamera) return;
+
+    const auto PC = Cast<ARSPlayerController>(GetController());
+    if (!PC) return;
+
+    PC->SetViewTargetWithBlend(CurrentTerminalCamera, CameraBlendTime, EViewTargetBlendFunction::VTBlend_Linear);
+}
+
+void ARSBaseCharacter::QuitTerminal()
+{
+    if (!bCanHackTerminal) return;
+
+    const auto PC = Cast<ARSPlayerController>(GetController());
+    if (!PC) return;
+
+    PC->SetViewTargetWithBlend(PC->GetPawn(), CameraBlendTime, EViewTargetBlendFunction::VTBlend_Linear);
 }
 

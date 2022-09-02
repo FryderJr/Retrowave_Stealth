@@ -11,6 +11,8 @@ class UCameraComponent;
 class USphereComponent;
 class UCapsuleComponent;
 
+class ACameraActor;
+
 UCLASS()
 class RETROWAVE_STEALTH_API ARSBaseCharacter : public ACharacter
 {
@@ -29,6 +31,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
     UCapsuleComponent* CameraCollisionComponent;
 
+    UPROPERTY(EditDefaultsOnly, meta = (ClampMin = 0.0f))
+    float CameraBlendTime;
+
 	virtual void BeginPlay() override;
 
 public:	
@@ -36,7 +41,14 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+    void CanHackTerminal(bool Enable);
+    void SetCameraToView(ACameraActor* Camera);
+
 private:
+    bool bCanHackTerminal;
+    UPROPERTY()
+    ACameraActor* CurrentTerminalCamera{nullptr};
+
     void MoveForward(float Amount);
     void MoveRight(float Amount);
     
@@ -48,4 +60,8 @@ private:
 
     UFUNCTION()
     void OnCameraCollisionEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+    void BeginHackTerminal();
+
+    void QuitTerminal();
 };
