@@ -77,12 +77,22 @@ void ARSBaseCharacter::MoveForward(float Amount)
 {
     if (FMath::IsNearlyZero(Amount)) return;
 
+    if (!bIsCrouched)
+    {
+        MakeNoise(1.0f, this, GetActorLocation());
+    }
+
     AddMovementInput(FVector(1.f, -1.f, 0.f), Amount);
 }
 
 void ARSBaseCharacter::MoveRight(float Amount)
 {
     if (FMath::IsNearlyZero(Amount)) return;
+
+    if (!bIsCrouched)
+    {
+        MakeNoise(1.0f, this, GetActorLocation());
+    }
 
     AddMovementInput(FVector(1.f, 1.f, 0.f), Amount);
 }
