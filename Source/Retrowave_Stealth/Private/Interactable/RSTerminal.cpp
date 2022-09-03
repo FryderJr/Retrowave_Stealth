@@ -6,7 +6,8 @@
 #include "Camera/CameraActor.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/RSBaseCharacter.h"
-#include "Player/RSPlayerController.h"
+#include "GameFramework/PlayerController.h"
+#include "RSGameMode.h"
 
 ARSTerminal::ARSTerminal()
 {
@@ -38,8 +39,7 @@ void ARSTerminal::NotifyActorBeginOverlap(AActor* OtherActor)
     const auto Player = Cast<ARSBaseCharacter>(OtherActor);
     if (!Player) return;
 
-    Player->CanHackTerminal(true);
-    Player->SetCameraToView(TerminalCamera);
+    Player->SetCurrentInteractableObject(this);
 }
 
 void ARSTerminal::NotifyActorEndOverlap(AActor* OtherActor)
@@ -47,7 +47,16 @@ void ARSTerminal::NotifyActorEndOverlap(AActor* OtherActor)
     const auto Player = Cast<ARSBaseCharacter>(OtherActor);
     if (!Player) return;
 
-    Player->CanHackTerminal(false);
+    Player->SetCurrentInteractableObject(nullptr);
+}
+
+void ARSTerminal::InteractWithObject(APlayerController* PC)
+{
+    if (!PC) return;
+    PC->SetViewTargetWithBlend(TerminalCamera, CameraBlendTime, EViewTargetBlendFunction::VTBlend_Linear);
+
+    if (!GetWorld() || !GetWorld()->GetAuthGameMode<ARSGameMode>()) return;
+    //GetWorld()->GetAuthGameMode<ARSGameMode>()->PlayMiniGame();
 }
 
 

@@ -11,6 +11,8 @@ class UCameraComponent;
 class USphereComponent;
 class UCapsuleComponent;
 
+class ARSInteractableActor;
+
 class ACameraActor;
 
 UCLASS()
@@ -41,13 +43,11 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-    void CanHackTerminal(bool Enable);
-    void SetCameraToView(ACameraActor* Camera);
+    void SetCurrentInteractableObject(ARSInteractableActor* InteractableActor);
 
 private:
-    bool bCanHackTerminal;
     UPROPERTY()
-    ACameraActor* CurrentTerminalCamera{nullptr};
+    ARSInteractableActor* CurrentInteractableObject{nullptr};
 
     void MoveForward(float Amount);
     void MoveRight(float Amount);
@@ -61,7 +61,7 @@ private:
     UFUNCTION()
     void OnCameraCollisionEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-    void BeginHackTerminal();
-
     void QuitTerminal();
+
+    void InteractWithObject();
 };

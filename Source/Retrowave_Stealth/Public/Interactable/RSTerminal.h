@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Interactable/RSInteractableActor.h"
 #include "RSTerminal.generated.h"
 
 class UBoxComponent;
 
 
 UCLASS()
-class RETROWAVE_STEALTH_API ARSTerminal : public AActor
+class RETROWAVE_STEALTH_API ARSTerminal : public ARSInteractableActor
 {
 	GENERATED_BODY()
 	
@@ -30,11 +30,16 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Default")
     ACameraActor* TerminalCamera;
 
+    UPROPERTY(EditDefaultsOnly, meta = (ClampMin = 0.0f))
+    float CameraBlendTime;
+
 	virtual void BeginPlay() override;
     
     virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
     virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
+
+    virtual void InteractWithObject(APlayerController* PC) override;
 
 private:
     bool bIsActive{true};

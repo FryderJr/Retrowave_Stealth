@@ -11,6 +11,7 @@
 #include "Player/RSPlayerController.h"
 #include "Camera/CameraActor.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Interactable/RSInteractableActor.h"
 
 DEFINE_LOG_CATEGORY_STATIC(RSBaseCharacter_LOG, All, All);
 
@@ -73,19 +74,13 @@ void ARSBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     //PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &ARSBaseCharacter::StartCrouch);
     //PlayerInputComponent->BindAction("Crouch", IE_Released, this, &ARSBaseCharacter::StopCrouch);
 
-    PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ARSBaseCharacter::BeginHackTerminal);
+    PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ARSBaseCharacter::InteractWithObject);
     PlayerInputComponent->BindAction("QuitTerminal", IE_Pressed, this, &ARSBaseCharacter::QuitTerminal);
 }
 
-void ARSBaseCharacter::CanHackTerminal(bool Enable)
+void ARSBaseCharacter::SetCurrentInteractableObject(ARSInteractableActor* InteractableActor)
 {
-    bCanHackTerminal = Enable;
-}
-
-void ARSBaseCharacter::SetCameraToView(ACameraActor* Camera)
-{
-    if (!Camera) return;
-    CurrentTerminalCamera = Camera;
+    CurrentInteractableObject = InteractableActor;
 }
 
 void ARSBaseCharacter::MoveForward(float Amount)
@@ -123,23 +118,19 @@ void ARSBaseCharacter::OnCameraCollisionEndOverlap(UPrimitiveComponent* Overlapp
     //OtherComp->SetVisibility(true);
 }
 
-void ARSBaseCharacter::BeginHackTerminal()
-{
-    if (!bCanHackTerminal || !CurrentTerminalCamera) return;
-
-    const auto PC = Cast<ARSPlayerController>(GetController());
-    if (!PC) return;
-
-    PC->SetViewTargetWithBlend(CurrentTerminalCamera, CameraBlendTime, EViewTargetBlendFunction::VTBlend_Linear);
-}
-
 void ARSBaseCharacter::QuitTerminal()
 {
-    if (!bCanHackTerminal) return;
-
     const auto PC = Cast<ARSPlayerController>(GetController());
     if (!PC) return;
 
     PC->SetViewTargetWithBlend(PC->GetPawn(), CameraBlendTime, EViewTargetBlendFunction::VTBlend_Linear);
+}
+
+void ARSBaseCharacter::InteractWithObject()
+{
+    if (!CurrentInteractableObject) return;
+    const auto PC = Cast<ARSPlayerController>(GetController());
+    if (!PC) return;
+    CurrentInteractableObject->InteractWithObject(PC);
 }
 
