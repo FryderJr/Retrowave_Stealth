@@ -10,6 +10,11 @@ void URSMenuWidget::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
     
+    if (ContinueGameButton)
+    {
+        ContinueGameButton->OnClicked.AddDynamic(this, &URSMenuWidget::OnContinueGame);
+    }
+
     if (StartPlayButton)
     {
         StartPlayButton->OnClicked.AddDynamic(this, &URSMenuWidget::OnStartPlay);
@@ -21,6 +26,16 @@ void URSMenuWidget::NativeOnInitialized()
     }
 }
     
+void URSMenuWidget::OnContinueGame()
+{
+    if (!GetWorld()) return;
+    const auto RSGameInstance = GetWorld()->GetGameInstance<URSGameInstance>();
+
+    if (!RSGameInstance) return;
+    
+    RSGameInstance->LoadGame();
+}
+
 void URSMenuWidget::OnStartPlay()
 {
     if (!GetWorld()) return;

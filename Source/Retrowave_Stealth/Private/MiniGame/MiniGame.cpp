@@ -34,7 +34,7 @@ void UMiniGame::PaintAll()
 
 FString UMiniGame::RandomChar()
 {
-	FString vaild = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890`-=]’,./~!@#$%^&*()_+{}|:<>?";
+	FString vaild = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890`-=][,./~!@#$%^&*()_+{}|:<>?";
 	FString rtnStr = (&vaild.GetCharArray()[FMath::RandRange(0, vaild.Len() - 1)]);
 	return FString(1, &rtnStr[0]);
 }

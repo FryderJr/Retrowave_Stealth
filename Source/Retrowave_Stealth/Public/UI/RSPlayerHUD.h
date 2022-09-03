@@ -7,15 +7,26 @@
 #include "RSTypes.h"
 #include "RSPlayerHUD.generated.h"
 
-
 UCLASS()
 class RETROWAVE_STEALTH_API ARSPlayerHUD : public AHUD
 {
 	GENERATED_BODY()
 	
 protected:
+//    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+//    TSubclassOf<UUserWidget> PlayerWidgetClass;
+    
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+    TSubclassOf<UUserWidget> PauseWidgetClass;
+    
     virtual void BeginPlay() override;
     
 private:
-    void OnGameStateChanged(ERSGameState);
+    UPROPERTY()
+    TMap<ERSGameState, UUserWidget*> GameWidgets;
+    
+    UPROPERTY()
+    UUserWidget* CurrentWidget;
+    
+    void OnGameStateChanged(ERSGameState State);
 };

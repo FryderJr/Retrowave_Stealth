@@ -15,6 +15,20 @@ void ARSPlayerController::BeginPlay()
     }
 }
 
+void ARSPlayerController::SetupInputComponent()
+{
+    Super::SetupInputComponent();
+    if (!InputComponent) return;
+    
+    InputComponent->BindAction("SetPause", IE_Pressed, this, &ARSPlayerController::OnGamePaused);
+}
+
+void ARSPlayerController::OnGamePaused()
+{
+    if (!GetWorld() || !GetWorld()->GetAuthGameMode()) return;
+    GetWorld()->GetAuthGameMode()->SetPause(this);
+}
+
 void ARSPlayerController::OnGameStateChanged(ERSGameState State)
 {
     UE_LOG(LogTemp, Display, TEXT("GemeState: %s"), *UEnum::GetValueAsString(State));
