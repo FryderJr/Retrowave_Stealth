@@ -23,7 +23,7 @@ protected:
     TSubclassOf<UUserWidget> PauseWidgetClass;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-    TSubclassOf<UUserWidget> MiniGameWidgetClass;
+    TSubclassOf<UUserWidget> InteractionWidgetClass;
     
     virtual void BeginPlay() override;
     

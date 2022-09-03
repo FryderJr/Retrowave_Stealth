@@ -18,7 +18,8 @@ public:
     
     FOnGameStateChagedSignature OnGameStateChanged;
 
-    void PlayMiniGame();
+    void InteractWithObject();
+    void StopInteraction();
     
 protected:
     virtual void StartPlay() override;

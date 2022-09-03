@@ -45,6 +45,8 @@ public:
 
     void SetCurrentInteractableObject(ARSInteractableActor* InteractableActor);
 
+    void QuitInteraction();
+
 private:
     UPROPERTY()
     ARSInteractableActor* CurrentInteractableObject{nullptr};
@@ -61,7 +63,6 @@ private:
     UFUNCTION()
     void OnCameraCollisionEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-    void QuitTerminal();
 
     void InteractWithObject();
 };

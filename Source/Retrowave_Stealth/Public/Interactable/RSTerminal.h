@@ -7,7 +7,7 @@
 #include "RSTerminal.generated.h"
 
 class UBoxComponent;
-
+class UWidgetComponent;
 
 UCLASS()
 class RETROWAVE_STEALTH_API ARSTerminal : public ARSInteractableActor
@@ -33,6 +33,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, meta = (ClampMin = 0.0f))
     float CameraBlendTime;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UWidgetComponent* MiniGameComponent;
+
 	virtual void BeginPlay() override;
     
     virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
@@ -43,4 +46,6 @@ protected:
 
 private:
     bool bIsActive{true};
+
+    void OnCheckField(bool bIsValidField);
 };

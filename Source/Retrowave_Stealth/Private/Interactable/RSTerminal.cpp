@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Interactable/RSTerminal.h"
 #include "Components/BoxComponent.h"
 #include "Camera/CameraActor.h"
@@ -8,6 +7,9 @@
 #include "Player/RSBaseCharacter.h"
 #include "GameFramework/PlayerController.h"
 #include "RSGameMode.h"
+#include "Components/WidgetComponent.h"
+#include "MiniGame/MiniGame.h"
+#include "RSGameInstance.h"
 
 ARSTerminal::ARSTerminal()
 {
@@ -24,12 +26,21 @@ ARSTerminal::ARSTerminal()
     TriggerComponent->SetBoxExtent(FVector(100.f));
     
     TerminalCamera = CreateDefaultSubobject<ACameraActor>("TerminalCamera");
+
+    MiniGameComponent = CreateDefaultSubobject<UWidgetComponent>("MiniGameComonent");
+    MiniGameComponent->SetupAttachment(GetRootComponent());
+    MiniGameComponent->SetWidgetSpace(EWidgetSpace::World);
 }
 
 void ARSTerminal::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+    const auto MiniGameWidget = Cast<UMiniGame>(MiniGameComponent->GetUserWidgetObject());
+    if (MiniGameWidget)
+    {
+        MiniGameWidget->OnCheckField.AddUObject(this, &ARSTerminal::OnCheckField);
+    }
 }
 
 void ARSTerminal::NotifyActorBeginOverlap(AActor* OtherActor)
@@ -52,11 +63,31 @@ void ARSTerminal::NotifyActorEndOverlap(AActor* OtherActor)
 
 void ARSTerminal::InteractWithObject(APlayerController* PC)
 {
-    if (!PC) return;
+    if (!PC || !bIsActive) return;
     PC->SetViewTargetWithBlend(TerminalCamera, CameraBlendTime, EViewTargetBlendFunction::VTBlend_Linear);
 
     if (!GetWorld() || !GetWorld()->GetAuthGameMode<ARSGameMode>()) return;
-    GetWorld()->GetAuthGameMode<ARSGameMode>()->PlayMiniGame();
+    GetWorld()->GetAuthGameMode<ARSGameMode>()->InteractWithObject();
+
+    const auto MiniGameWidget = Cast<UMiniGame>(MiniGameComponent->GetUserWidgetObject());
+    if (MiniGameWidget)
+    {
+        MiniGameWidget->SetKeyboardFocus();
+    }
+}
+
+void ARSTerminal::OnCheckField(bool bIsValidField)
+{
+    bIsActive = false;
+    UE_LOG(LogTemp, Display, TEXT("FieldChecked"));
+
+    if (!GetWorld() || !GetWorld()->GetAuthGameMode<ARSGameMode>() || !GetWorld()->GetGameInstance<URSGameInstance>()) return;
+    GetWorld()->GetAuthGameMode<ARSGameMode>()->StopInteraction();
+
+    if (bIsValidField)
+    {
+        GetWorld()->GetGameInstance<URSGameInstance>()->AddInfoPoints();
+    }
 }
 
 

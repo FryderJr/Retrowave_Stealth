@@ -15,7 +15,7 @@
 #include "Engine/World.h"
 #include "GameFramework/Actor.h"
 
-void UMiniGame::PaintAll()
+void UMiniGame::PaintAll(const FColor& Color)
 {
 	TArray<UWidget*> MatrixRows = Matrix->Rows->GetAllChildren();
     if (MatrixRows.Num() == 0) return;
@@ -26,7 +26,7 @@ void UMiniGame::PaintAll()
         if (!MatrixColumnsContainer) continue;
 
         TArray<UWidget*> MatrixColumns = MatrixColumnsContainer->Columns->GetAllChildren();
-        PaintRowCellsInRange(MatrixColumns, 0, MatrixColumns.Num(), FColor::Black);
+        PaintRowCellsInRange(MatrixColumns, 0, MatrixColumns.Num(), Color);
     }
 }
 
@@ -72,7 +72,7 @@ void UMiniGame::RandomizeMatrix()
 	}
 }
 
-void UMiniGame::MoveField(int X, int Y)
+void UMiniGame::MoveField(int32 X, int32 Y)
 {
 	if (X < 0 || Y < 0) return;
 
@@ -87,7 +87,7 @@ void UMiniGame::MoveField(int X, int Y)
 
 	if (ColumnsLength < 1 || X + KeywordLength > ColumnsLength) return;
     
-    PaintAll();
+    PaintAll(FColor::Black);
     
     PaintRowCellsInRange(MatrixColumns, X, KeywordLength, FColor::White);
 
@@ -120,9 +120,10 @@ void UMiniGame::PlaceKeyword()
 
 bool UMiniGame::CheckField()
 {
-	if (CurrentRow == KeywordBeginsAtRow && CurrentColumn == KeywordBeginsAtColumn) return true;
-	
-    return false;
+	bool bIsValidField = CurrentRow == KeywordBeginsAtRow && CurrentColumn == KeywordBeginsAtColumn;
+    OnCheckField.Broadcast(bIsValidField);
+    bIsValidField ? PaintAll(FColor::Green) : PaintAll(FColor::Red);
+    return bIsValidField;
 }
 
 void UMiniGame::Blink()
@@ -135,7 +136,7 @@ void UMiniGame::StartBlinking()
 {
 	FTimerDelegate CustomDelegate;
 	CustomDelegate.BindUFunction(this, FName("Blink"));
-	GetWorld()->GetTimerManager().SetTimer(FBlinkTimer, CustomDelegate, 3.f, true);
+	GetWorld()->GetTimerManager().SetTimer(FBlinkTimer, CustomDelegate, BlinkingTime, true);
 }
 
 void UMiniGame::PaintRowCellsInRange(TArray<UWidget*>& CellsInRow, const uint32 Begin, const uint32 Range, const FColor& Color)

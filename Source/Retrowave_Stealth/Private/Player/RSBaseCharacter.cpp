@@ -75,7 +75,7 @@ void ARSBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     //PlayerInputComponent->BindAction("Crouch", IE_Released, this, &ARSBaseCharacter::StopCrouch);
 
     PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ARSBaseCharacter::InteractWithObject);
-    PlayerInputComponent->BindAction("QuitTerminal", IE_Pressed, this, &ARSBaseCharacter::QuitTerminal);
+    PlayerInputComponent->BindAction("QuitTerminal", IE_Pressed, this, &ARSBaseCharacter::QuitInteraction);
 }
 
 void ARSBaseCharacter::SetCurrentInteractableObject(ARSInteractableActor* InteractableActor)
@@ -118,7 +118,7 @@ void ARSBaseCharacter::OnCameraCollisionEndOverlap(UPrimitiveComponent* Overlapp
     //OtherComp->SetVisibility(true);
 }
 
-void ARSBaseCharacter::QuitTerminal()
+void ARSBaseCharacter::QuitInteraction()
 {
     const auto PC = Cast<ARSPlayerController>(GetController());
     if (!PC) return;

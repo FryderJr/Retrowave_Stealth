@@ -11,7 +11,7 @@ void ARSPlayerHUD::BeginPlay()
     
     GameWidgets.Add(ERSGameState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayerWidgetClass));
     GameWidgets.Add(ERSGameState::Pause, CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass));
-    GameWidgets.Add(ERSGameState::PlayMiniGame, CreateWidget<UUserWidget>(GetWorld(), MiniGameWidgetClass));
+    GameWidgets.Add(ERSGameState::Interact, CreateWidget<UUserWidget>(GetWorld(), InteractionWidgetClass));
     
     for (auto& GameWidgetPair : GameWidgets)
     {

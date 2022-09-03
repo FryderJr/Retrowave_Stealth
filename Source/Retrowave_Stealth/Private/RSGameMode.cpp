@@ -15,10 +15,14 @@ ARSGameMode::ARSGameMode()
     HUDClass = ARSPlayerHUD::StaticClass();
 }
 
-void ARSGameMode::PlayMiniGame()
+void ARSGameMode::InteractWithObject()
 {
-    SetGameState(ERSGameState::PlayMiniGame);
-    UE_LOG(LogTemp, Display, TEXT("Play mini game"));
+    SetGameState(ERSGameState::Interact);
+}
+
+void ARSGameMode::StopInteraction()
+{
+    SetGameState(ERSGameState::InProgress);
 }
 
 void ARSGameMode::StartPlay()

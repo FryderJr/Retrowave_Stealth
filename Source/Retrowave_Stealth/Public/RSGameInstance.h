@@ -24,7 +24,8 @@ public:
 
     UFUNCTION()
     void SavedGame(const FString& SlotName, const int32 UserIndex, bool bSuccess);
-    
+
+    void AddInfoPoints() { ++InfoPoints; };
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     FName StartupLevelName = NAME_None;
@@ -37,4 +38,7 @@ protected:
     
     UPROPERTY(VisibleAnywhere, Category = "Game")
     FTransform PlayerLocation;
+
+    UPROPERTY(VisibleAnywhere, Category = "Score")
+    uint32 InfoPoints{0};
 };

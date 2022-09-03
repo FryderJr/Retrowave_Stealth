@@ -2,6 +2,7 @@
 
 #include "Player/RSPlayerController.h"
 #include "RSGameMode.h"
+#include "RSBaseCharacter.h"
 
 void ARSPlayerController::BeginPlay()
 {
@@ -36,11 +37,12 @@ void ARSPlayerController::OnGameStateChanged(ERSGameState State)
     {
         SetInputMode(FInputModeGameOnly());
         bShowMouseCursor = false;
-    }
-    else if (State == ERSGameState::PlayMiniGame)
-    {
-        SetInputMode(FInputModeGameOnly());
-        bShowMouseCursor = false;
+        
+        const auto BaseCharacter = Cast<ARSBaseCharacter>(GetPawn());
+        if (BaseCharacter)
+        {
+            BaseCharacter->QuitInteraction();
+        }
     }
     else
     {

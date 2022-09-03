@@ -3,9 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "Row.h"
 #include "Blueprint/UserWidget.h"
 #include "MiniGame.generated.h"
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCheckFieldSignature, bool);
 
 UCLASS()
 class RETROWAVE_STEALTH_API UMiniGame : public UUserWidget
@@ -13,6 +14,8 @@ class RETROWAVE_STEALTH_API UMiniGame : public UUserWidget
 	GENERATED_BODY()
 
 public:
+    FOnCheckFieldSignature OnCheckField;
+    
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UCanvasPanel* MatrixCanvas;
 
@@ -25,16 +28,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MiniGame)
 	FString Keyword = "";
 
-	//TArray<TCHAR> Code;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MiniGame)
+    float BlinkingTime = 4.f;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = MiniGame)
-	int CurrentRow = 0;
+    UPROPERTY(BlueprintReadWrite)
+    int32 CurrentRow = 0;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = MiniGame)
-	int CurrentColumn = 0;
-
-	UFUNCTION(BlueprintCallable, Category = MiniGame)
-	void PaintAll();
+    UPROPERTY(BlueprintReadWrite)
+    int32 CurrentColumn = 0;
 
 	UFUNCTION(BlueprintCallable, Category = MiniGame)
 	void CreateKeyword();
@@ -43,7 +44,7 @@ public:
 	void RandomizeMatrix();
 
 	UFUNCTION(BlueprintCallable, Category = MiniGame)
-	void MoveField(int X, int Y);
+	void MoveField(int32 X, int32 Y);
 
 	UFUNCTION(BlueprintCallable, Category = MiniGame)
 	bool CheckField();
@@ -54,19 +55,24 @@ public:
 	UFUNCTION(BlueprintCallable, Category = MiniGame)
 	void StartBlinking();
 
-private:
-    const FString SymbolsToFill = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890`-=],./~!@#$%^&*()_+{}|:<>?";
-    
-	size_t KeywordBeginsAtRow = 0;
-	size_t KeywordBeginsAtColumn = 0;
+//protected:
+    //virtual void NativeOnInitialized() override;
 
-	size_t ColumnsLength = 0;
-	size_t RowsLength = 0;
+private:
+    const FString SymbolsToFill = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890`-=][,./~!@#$%^&*()_+{}|:<>?";
+
+    int32 KeywordBeginsAtRow = 0;
+    int32 KeywordBeginsAtColumn = 0;
+
+    int32 ColumnsLength = 0;
+    int32 RowsLength = 0;
 
 	FTimerHandle FBlinkTimer;
     
-    FString RandomChar();
-    
+    void PaintAll(const FColor& Color);
+
+    FString RandomChar();    
+
     void PlaceKeyword();
     
     void PaintRowCellsInRange(TArray<UWidget*>& CellsInRow, const uint32 Begin, const uint32 Range, const FColor& Color);
