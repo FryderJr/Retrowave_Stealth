@@ -17,6 +17,8 @@ public:
     ARSGameMode();
     
     FOnGameStateChagedSignature OnGameStateChanged;
+
+    void PlayMiniGame();
     
 protected:
     virtual void StartPlay() override;

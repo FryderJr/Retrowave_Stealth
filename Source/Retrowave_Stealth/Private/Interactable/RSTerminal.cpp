@@ -56,7 +56,7 @@ void ARSTerminal::InteractWithObject(APlayerController* PC)
     PC->SetViewTargetWithBlend(TerminalCamera, CameraBlendTime, EViewTargetBlendFunction::VTBlend_Linear);
 
     if (!GetWorld() || !GetWorld()->GetAuthGameMode<ARSGameMode>()) return;
-    //GetWorld()->GetAuthGameMode<ARSGameMode>()->PlayMiniGame();
+    GetWorld()->GetAuthGameMode<ARSGameMode>()->PlayMiniGame();
 }
 
 

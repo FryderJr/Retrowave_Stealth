@@ -9,6 +9,7 @@ enum class ERSGameState : uint8
 {
     WaitingToStart = 0,
     InProgress,
+    PlayMiniGame,
     Pause,
     GameOver
 };

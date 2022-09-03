@@ -29,11 +29,6 @@ void URSGameInstance::SavedGame(const FString& SlotName, const int32 UserIndex, 
 
 }
 
-void URSGameInstance::LoadMap()
-{
-    UGameplayStatics::OpenLevel(this, GetStartupLevelName(), true, "?savegame=" + SaveSlotName);
-}
-
 void URSGameInstance::LoadGame()
 {
     if (URSSaveGame* LoadedGame = Cast<URSSaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlotName, 0)))

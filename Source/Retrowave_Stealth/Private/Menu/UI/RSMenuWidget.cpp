@@ -28,12 +28,19 @@ void URSMenuWidget::NativeOnInitialized()
     
 void URSMenuWidget::OnContinueGame()
 {
+    // check PlayerLocation != PlayerStart
     if (!GetWorld()) return;
     const auto RSGameInstance = GetWorld()->GetGameInstance<URSGameInstance>();
 
     if (!RSGameInstance) return;
-    
-    RSGameInstance->LoadGame();
+
+    if (RSGameInstance->GetStartupLevelName().IsNone())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("No any StartLevel set yet"));
+        return;
+    }
+
+    UGameplayStatics::OpenLevel(this, RSGameInstance->GetStartupLevelName(), true, "?savegame=" + RSGameInstance->GetSaveSlotName());
 }
 
 void URSMenuWidget::OnStartPlay()

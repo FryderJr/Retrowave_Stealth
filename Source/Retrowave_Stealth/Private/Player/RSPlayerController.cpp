@@ -37,9 +37,15 @@ void ARSPlayerController::OnGameStateChanged(ERSGameState State)
         SetInputMode(FInputModeGameOnly());
         bShowMouseCursor = false;
     }
+    else if (State == ERSGameState::PlayMiniGame)
+    {
+        SetInputMode(FInputModeGameOnly());
+        bShowMouseCursor = false;
+    }
     else
     {
         SetInputMode(FInputModeUIOnly());
         bShowMouseCursor = true;
     }
 }
+

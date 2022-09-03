@@ -11,13 +11,19 @@ UCLASS()
 class RETROWAVE_STEALTH_API ARSPlayerHUD : public AHUD
 {
 	GENERATED_BODY()
+
+public:
+    UUserWidget* GetCurrentWidget() const { return CurrentWidget; };
 	
 protected:
-//    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-//    TSubclassOf<UUserWidget> PlayerWidgetClass;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+    TSubclassOf<UUserWidget> PlayerWidgetClass;
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
     TSubclassOf<UUserWidget> PauseWidgetClass;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+    TSubclassOf<UUserWidget> MiniGameWidgetClass;
     
     virtual void BeginPlay() override;
     

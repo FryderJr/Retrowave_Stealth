@@ -15,6 +15,12 @@ ARSGameMode::ARSGameMode()
     HUDClass = ARSPlayerHUD::StaticClass();
 }
 
+void ARSGameMode::PlayMiniGame()
+{
+    SetGameState(ERSGameState::PlayMiniGame);
+    UE_LOG(LogTemp, Display, TEXT("Play mini game"));
+}
+
 void ARSGameMode::StartPlay()
 {
     Super::StartPlay();
@@ -29,10 +35,8 @@ void ARSGameMode::InitGame(const FString& MapName, const FString& Options, FStri
     if (SelectedSaveSlot.Len() > 0)
     {
         URSGameInstance* MyGameInstance = Cast<URSGameInstance>(GetGameInstance());
-        if (!MyGameInstance)
-        {
-            return;
-        }
+        if (!MyGameInstance) return;
+        
         MyGameInstance->LoadGame();
     }
 }
