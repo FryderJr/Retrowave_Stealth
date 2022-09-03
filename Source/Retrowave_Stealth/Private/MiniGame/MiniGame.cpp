@@ -4,6 +4,7 @@
 #include "MiniGame/MiniGame.h"
 #include "MiniGame/Column.h"
 #include "MiniGame/Cell.h"
+#include "MiniGame/Row.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
@@ -17,142 +18,137 @@
 void UMiniGame::PaintAll()
 {
 	TArray<UWidget*> MatrixRows = Matrix->Rows->GetAllChildren();
+    if (MatrixRows.Num() == 0) return;
 
-	for (size_t i = 0; i < MatrixRows.Num(); i++)
-	{
-		UColumn* MatrixColumnContainer = Cast<UColumn>(MatrixRows[i]);
-		TArray<UWidget*> MatrixColumns = MatrixColumnContainer->Columns->GetAllChildren();
-		for (size_t j = 0; j < MatrixColumns.Num(); j++)
-		{
-			UCell* MatrixCell = Cast<UCell>(MatrixColumns[j]);
-			FSlateBrush NewBrush = FSlateBrush(MatrixCell->Background->Brush);
-			NewBrush.TintColor = FSlateColor(FLinearColor(FColor::Black));
-			MatrixCell->Background->SetBrush(NewBrush);
-		}
-	}
+    for (const auto& MatrixRow : MatrixRows)
+    {
+        const auto MatrixColumnsContainer = Cast<UColumn>(MatrixRow);
+        if (!MatrixColumnsContainer) continue;
+
+        TArray<UWidget*> MatrixColumns = MatrixColumnsContainer->Columns->GetAllChildren();
+        PaintRowCellsInRange(MatrixColumns, 0, MatrixColumns.Num(), FColor::Black);
+    }
 }
 
 FString UMiniGame::RandomChar()
 {
-	FString vaild = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890`-=][,./~!@#$%^&*()_+{}|:<>?";
-	FString rtnStr = (&vaild.GetCharArray()[FMath::RandRange(0, vaild.Len() - 1)]);
-	return FString(1, &rtnStr[0]);
+    if (SymbolsToFill.Len() == 0) return FString(""); //checkNoEntry
+    uint32 RandIndex = FMath::RandRange(0, SymbolsToFill.Len() - 1);
+    return FString(1, &SymbolsToFill[RandIndex]);
 }
 
-void UMiniGame::RandomizeField()
+void UMiniGame::CreateKeyword()
 {
-	for (size_t i = 0; i < FieldLength; i++)
+	for (uint8 i = 0; i < KeywordLength; i++)
 	{
-		Field += RandomChar();
+        Keyword += RandomChar();
 	}
-	FieldRow = FMath::RandRange(0, RowsLength - 1);
-	FieldColumn = FMath::RandRange(0, ColumnsLength - FieldLength);
-	PlaceField();
+	PlaceKeyword();
 }
 
 void UMiniGame::RandomizeMatrix()
 {
 	TArray<UWidget*> MatrixRows = Matrix->Rows->GetAllChildren();
+    if (MatrixRows.Num() == 0) return;
+    
 	RowsLength = MatrixRows.Num();
-	for (size_t i = 0; i < MatrixRows.Num(); i++)
+	for (uint8 i = 0; i < MatrixRows.Num(); i++)
 	{
 		UColumn* MatrixColumnContainer = Cast<UColumn>(MatrixRows[i]);
+        if (!MatrixColumnContainer) continue;
+        
 		TArray<UWidget*> MatrixColumns = MatrixColumnContainer->Columns->GetAllChildren();
+        if (MatrixColumns.Num() == 0) continue;
+        
 		ColumnsLength = MatrixColumns.Num();
-		for (size_t j = 0; j < MatrixColumns.Num(); j++)
-		{
-			UCell* MatrixCell = Cast<UCell>(MatrixColumns[j]);
-			MatrixCell->CellText->SetText(FText::FromString(RandomChar()));
-		}
+
+        for (const auto& Column : MatrixColumns)
+        {
+            const auto Cell = Cast<UCell>(Column);
+            if (!Cell) return;
+            
+            Cell->CellText->SetText(FText::FromString(RandomChar()));
+        }
 	}
 }
 
 void UMiniGame::MoveField(int X, int Y)
 {
-	if (X < 0)
-	{
-		return;
-	}
-
-	if (Y < 0)
-	{
-		return;
-	}
+	if (X < 0 || Y < 0) return;
 
 	TArray<UWidget*> MatrixRows = Matrix->Rows->GetAllChildren();
 
-	if (RowsLength < 1)
-	{
-		return;
-	}
+	if (MatrixRows.Num() == 0 || RowsLength < 1 || Y + 1 > RowsLength) return;
 
-	if (Y + 1 > RowsLength)
-	{
-		return;
-	}
-
-	UColumn* MatrixColumnContainer = Cast<UColumn>(MatrixRows[Y]);
+	const auto MatrixColumnContainer = Cast<UColumn>(MatrixRows[Y]);
+    if (!MatrixColumnContainer) return;
 
 	TArray<UWidget*> MatrixColumns = MatrixColumnContainer->Columns->GetAllChildren();
 
-	if (ColumnsLength < 1)
-	{
-		return;
-	}
-
-	if (X + FieldLength > ColumnsLength)
-	{
-		return;
-	}
-
-	PaintAll();
-
-	for (size_t i = X; i < X + FieldLength; i++)
-	{
-		UCell* MatrixCell = Cast<UCell>(MatrixColumns[i]);
-		FSlateBrush NewBrush = FSlateBrush(MatrixCell->Background->Brush);
-		NewBrush.TintColor = FSlateColor(FLinearColor(FColor::White));
-		MatrixCell->Background->SetBrush(NewBrush);
-	}
+	if (ColumnsLength < 1 || X + KeywordLength > ColumnsLength) return;
+    
+    PaintAll();
+    
+    PaintRowCellsInRange(MatrixColumns, X, KeywordLength, FColor::White);
 
 	CurrentColumn = X;
 	CurrentRow = Y;
 }
 
-void UMiniGame::PlaceField()
+void UMiniGame::PlaceKeyword()
 {
-	
+    KeywordBeginsAtRow = FMath::RandRange(0, RowsLength - 1);
+    KeywordBeginsAtColumn = FMath::RandRange(0, ColumnsLength - KeywordLength);
+    
 	TArray<UWidget*> MatrixRows = Matrix->Rows->GetAllChildren();
-	UColumn* MatrixColumnContainer = Cast<UColumn>(MatrixRows[FieldRow]);
+    if (MatrixRows.Num() == 0) return;
+    
+    const auto MatrixColumnContainer = Cast<UColumn>(MatrixRows[KeywordBeginsAtRow]);
+    if (!MatrixColumnContainer) return;
+    
 	TArray<UWidget*> MatrixColumns = MatrixColumnContainer->Columns->GetAllChildren();
-	for (size_t k = FieldColumn; k < FieldColumn + FieldLength; k++)
+    if (MatrixColumns.Num() == 0) return;
+    
+	for (uint8 i = KeywordBeginsAtColumn; i < KeywordBeginsAtColumn + KeywordLength; i++)
 	{
-		UCell* MatrixCell = Cast<UCell>(MatrixColumns[k]);
-		MatrixCell->CellText->SetText(FText::FromString(FString(1, &Field[k - FieldColumn])));
+		const auto MatrixCell = Cast<UCell>(MatrixColumns[i]);
+        if (!MatrixCell) continue;
+        
+		MatrixCell->CellText->SetText(FText::FromString(FString(1, &Keyword[i - KeywordBeginsAtColumn])));
 	}
 }
 
 bool UMiniGame::CheckField()
 {
-	if (CurrentRow == FieldRow && CurrentColumn == FieldColumn)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	if (CurrentRow == KeywordBeginsAtRow && CurrentColumn == KeywordBeginsAtColumn) return true;
+	
+    return false;
 }
 
 void UMiniGame::Blink()
 {
 	RandomizeMatrix();
-	PlaceField();
+    PlaceKeyword();
 }
 
 void UMiniGame::StartBlinking()
 {
 	FTimerDelegate CustomDelegate;
 	CustomDelegate.BindUFunction(this, FName("Blink"));
-	GetWorld()->GetTimerManager().SetTimer(FBlinkTimer, CustomDelegate, 0.5f, true);
+	GetWorld()->GetTimerManager().SetTimer(FBlinkTimer, CustomDelegate, 3.f, true);
+}
+
+void UMiniGame::PaintRowCellsInRange(TArray<UWidget*>& CellsInRow, const uint32 Begin, const uint32 Range, const FColor& Color)
+{
+    if (CellsInRow.Num() == 0 || Range == 0) return;
+    
+    for (uint8 i = Begin; i < Begin + Range; i++)
+    {
+        auto Cell = Cast<UCell>(CellsInRow[i]);
+        if (!Cell) continue;
+        
+        FSlateBrush NewBrush = FSlateBrush(Cell->Background->Brush);
+        NewBrush.TintColor = FSlateColor(FLinearColor(Color));
+        Cell->Background->SetBrush(NewBrush);
+    }
 }
