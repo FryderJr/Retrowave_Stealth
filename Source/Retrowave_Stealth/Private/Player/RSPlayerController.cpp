@@ -41,7 +41,7 @@ void ARSPlayerController::OnGameStateChanged(ERSGameState State)
         const auto BaseCharacter = Cast<ARSBaseCharacter>(GetPawn());
         if (BaseCharacter)
         {
-            BaseCharacter->QuitInteraction();
+            BaseCharacter->StopInteraction();
         }
     }
     else

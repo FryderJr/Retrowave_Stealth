@@ -17,6 +17,9 @@ class RETROWAVE_STEALTH_API ARSTerminal : public ARSInteractableActor
 public:	
 	ARSTerminal();
 
+    bool GetHackedStatus() const { return bIsHackedSucces; };
+    bool GetWorkingStatus() const { return bIsActive; };
+
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
     USceneComponent* SceneComponent;
@@ -42,10 +45,12 @@ protected:
 
     virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
-    virtual void InteractWithObject(APlayerController* PC) override;
+    virtual void InteractWithObject(ACharacter* Interactor) override;
+    virtual void StopInteraction(ACharacter* Interactor) override;
 
 private:
     bool bIsActive{true};
+    bool bIsHackedSucces{false};
 
     void OnCheckField(bool bIsValidField);
 };

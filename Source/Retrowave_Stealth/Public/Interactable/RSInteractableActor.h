@@ -14,7 +14,8 @@ class RETROWAVE_STEALTH_API ARSInteractableActor : public AActor
 public:	
 	ARSInteractableActor();
 
-    virtual void InteractWithObject(APlayerController* PC);
+    virtual void InteractWithObject(ACharacter* Interactor) {};
+    virtual void StopInteraction(ACharacter* Interactor) {};
 
 protected:
 	virtual void BeginPlay() override;

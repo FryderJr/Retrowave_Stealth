@@ -75,7 +75,7 @@ void ARSBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     //PlayerInputComponent->BindAction("Crouch", IE_Released, this, &ARSBaseCharacter::StopCrouch);
 
     PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ARSBaseCharacter::InteractWithObject);
-    PlayerInputComponent->BindAction("QuitTerminal", IE_Pressed, this, &ARSBaseCharacter::QuitInteraction);
+    PlayerInputComponent->BindAction("QuitTerminal", IE_Pressed, this, &ARSBaseCharacter::StopInteraction);
 }
 
 void ARSBaseCharacter::SetCurrentInteractableObject(ARSInteractableActor* InteractableActor)
@@ -118,19 +118,17 @@ void ARSBaseCharacter::OnCameraCollisionEndOverlap(UPrimitiveComponent* Overlapp
     //OtherComp->SetVisibility(true);
 }
 
-void ARSBaseCharacter::QuitInteraction()
+void ARSBaseCharacter::StopInteraction()
 {
-    const auto PC = Cast<ARSPlayerController>(GetController());
-    if (!PC) return;
-
-    PC->SetViewTargetWithBlend(PC->GetPawn(), CameraBlendTime, EViewTargetBlendFunction::VTBlend_Linear);
+    if (!CurrentInteractableObject) return;
+    GetMesh()->SetOnlyOwnerSee(false);
+    CurrentInteractableObject->StopInteraction(this);
 }
 
 void ARSBaseCharacter::InteractWithObject()
 {
     if (!CurrentInteractableObject) return;
-    const auto PC = Cast<ARSPlayerController>(GetController());
-    if (!PC) return;
-    CurrentInteractableObject->InteractWithObject(PC);
+    GetMesh()->SetOnlyOwnerSee(true);
+    CurrentInteractableObject->InteractWithObject(this);
 }
 

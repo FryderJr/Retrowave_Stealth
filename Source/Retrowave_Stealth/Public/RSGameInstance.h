@@ -12,6 +12,8 @@ class RETROWAVE_STEALTH_API URSGameInstance : public UGameInstance
 	GENERATED_BODY()
 	
 public:
+    virtual void Init() override;
+    
     FName GetStartupLevelName() const { return StartupLevelName; };
     FName GetMenuLevelName() const { return MenuLevelName; };
     FString GetSaveSlotName() const { return SaveSlotName; };
@@ -24,8 +26,7 @@ public:
 
     UFUNCTION()
     void SavedGame(const FString& SlotName, const int32 UserIndex, bool bSuccess);
-
-    void AddInfoPoints() { ++InfoPoints; };
+    
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     FName StartupLevelName = NAME_None;

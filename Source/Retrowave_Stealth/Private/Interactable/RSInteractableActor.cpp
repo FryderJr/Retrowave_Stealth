@@ -9,10 +9,6 @@ ARSInteractableActor::ARSInteractableActor()
 
 }
 
-void ARSInteractableActor::InteractWithObject(APlayerController* PC)
-{
-}
-
 void ARSInteractableActor::BeginPlay()
 {
 	Super::BeginPlay();

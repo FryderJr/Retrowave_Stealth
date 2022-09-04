@@ -3,7 +3,6 @@
 #include "Interactable/RSTerminal.h"
 #include "Components/BoxComponent.h"
 #include "Camera/CameraActor.h"
-#include "Kismet/GameplayStatics.h"
 #include "Player/RSBaseCharacter.h"
 #include "GameFramework/PlayerController.h"
 #include "RSGameMode.h"
@@ -61,9 +60,12 @@ void ARSTerminal::NotifyActorEndOverlap(AActor* OtherActor)
     Player->SetCurrentInteractableObject(nullptr);
 }
 
-void ARSTerminal::InteractWithObject(APlayerController* PC)
+void ARSTerminal::InteractWithObject(ACharacter* Interactor)
 {
-    if (!PC || !bIsActive) return;
+    if (!Interactor || !bIsActive) return;
+    const auto PC = Cast<APlayerController>(Interactor->GetController());
+
+    if (!PC) return;
     PC->SetViewTargetWithBlend(TerminalCamera, CameraBlendTime, EViewTargetBlendFunction::VTBlend_Linear);
 
     if (!GetWorld() || !GetWorld()->GetAuthGameMode<ARSGameMode>()) return;
@@ -76,18 +78,24 @@ void ARSTerminal::InteractWithObject(APlayerController* PC)
     }
 }
 
+void ARSTerminal::StopInteraction(ACharacter* Interactor)
+{
+    if (!Interactor) return;
+    const auto PC = Cast<APlayerController>(Interactor->GetController());
+
+    if (!PC) return;
+    PC->SetViewTargetWithBlend(PC->GetPawn(), CameraBlendTime, EViewTargetBlendFunction::VTBlend_Linear);
+}
+
 void ARSTerminal::OnCheckField(bool bIsValidField)
 {
     bIsActive = false;
+    bIsHackedSucces = bIsValidField;
     UE_LOG(LogTemp, Display, TEXT("FieldChecked"));
 
     if (!GetWorld() || !GetWorld()->GetAuthGameMode<ARSGameMode>() || !GetWorld()->GetGameInstance<URSGameInstance>()) return;
     GetWorld()->GetAuthGameMode<ARSGameMode>()->StopInteraction();
-
-    if (bIsValidField)
-    {
-        GetWorld()->GetGameInstance<URSGameInstance>()->AddInfoPoints();
-    }
+    GetWorld()->GetAuthGameMode<ARSGameMode>()->UpdateTerminalData();
 }
 
 

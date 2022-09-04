@@ -7,6 +7,11 @@
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 
+void URSGameInstance::Init()
+{
+    Super::Init();
+}
+
 void URSGameInstance::SaveGame(FTransform PlayerTransform)
 {
     if (URSSaveGame* SaveGameInstance = Cast<URSSaveGame>(UGameplayStatics::CreateSaveGameObject(URSSaveGame::StaticClass())))

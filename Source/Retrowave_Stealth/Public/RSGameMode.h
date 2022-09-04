@@ -20,6 +20,11 @@ public:
 
     void InteractWithObject();
     void StopInteraction();
+
+    void UpdateTerminalData();
+
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    FTerminalData GetCurrentTerminalData() const { return CurrentTerminalData; };
     
 protected:
     virtual void StartPlay() override;
@@ -29,6 +34,8 @@ protected:
     
 private:
     ERSGameState RetrowaveGameState = ERSGameState::WaitingToStart;
+
+    FTerminalData CurrentTerminalData;
     
     void SetGameState(ERSGameState State);
 };

@@ -33,9 +33,6 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
     UCapsuleComponent* CameraCollisionComponent;
 
-    UPROPERTY(EditDefaultsOnly, meta = (ClampMin = 0.0f))
-    float CameraBlendTime;
-
 	virtual void BeginPlay() override;
 
 public:	
@@ -45,7 +42,7 @@ public:
 
     void SetCurrentInteractableObject(ARSInteractableActor* InteractableActor);
 
-    void QuitInteraction();
+    void StopInteraction();
 
 private:
     UPROPERTY()
@@ -62,7 +59,6 @@ private:
 
     UFUNCTION()
     void OnCameraCollisionEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
 
     void InteractWithObject();
 };
