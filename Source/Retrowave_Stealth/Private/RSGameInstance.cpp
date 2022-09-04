@@ -41,10 +41,9 @@ void URSGameInstance::LoadGame()
         for (FActorIterator It(GetWorld()); It; ++It)
         {
             AActor* Actor = *It;
-            if (Cast<APlayerStart>(Actor))
-            {
-                It->SetActorTransform(LoadedGame->PlayerTransform);
-            }
+            if (!Cast<APlayerStart>(Actor)) continue;
+               
+            It->SetActorTransform(LoadedGame->PlayerTransform);
         }
         //GetPrimaryPlayerController()->GetPawn()->SetActorTransform(LoadedGame->PlayerTransform);
         // The operation was successful, so LoadedGame now contains the data we saved earlier.
