@@ -6,6 +6,10 @@
 #include "Blueprint/UserWidget.h"
 #include "MiniGame.generated.h"
 
+class UCanvasPanel;
+class UTextBlock;
+class URow;
+
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCheckFieldSignature, bool);
 
 UCLASS()
@@ -15,33 +19,6 @@ class RETROWAVE_STEALTH_API UMiniGame : public UUserWidget
 
 public:
     FOnCheckFieldSignature OnCheckField;
-    
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UCanvasPanel* MatrixCanvas;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class URow* Matrix;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MiniGame)
-	int KeywordLength = 5;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MiniGame)
-	FString Keyword = "";
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MiniGame)
-    float BlinkingTime = 4.f;
-
-    UPROPERTY(BlueprintReadWrite)
-    int32 CurrentRow = 0;
-
-    UPROPERTY(BlueprintReadWrite)
-    int32 CurrentColumn = 0;
-
-	UFUNCTION(BlueprintCallable, Category = MiniGame)
-	void CreateKeyword();
-
-	UFUNCTION(BlueprintCallable, Category = MiniGame)
-	void RandomizeMatrix();
 
 	UFUNCTION(BlueprintCallable, Category = MiniGame)
 	void MoveField(int32 X, int32 Y);
@@ -49,17 +26,28 @@ public:
 	UFUNCTION(BlueprintCallable, Category = MiniGame)
 	bool CheckField();
 
-	UFUNCTION()
-	void Blink();
+protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+    UCanvasPanel* MatrixCanvas;
 
-	UFUNCTION(BlueprintCallable, Category = MiniGame)
-	void StartBlinking();
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+    URow* Matrix;
 
-//protected:
-    //virtual void NativeOnInitialized() override;
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* KeywordToFind;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MiniGame)
+    int KeywordLength = 5;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MiniGame)
+    float BlinkingRate = 4.f;
+    
+    virtual void NativeOnInitialized() override;
 
 private:
     const FString SymbolsToFill = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890`-=][,./~!@#$%^&*()_+{}|:<>?";
+
+    FString Keyword = "";
 
     int32 KeywordBeginsAtRow = 0;
     int32 KeywordBeginsAtColumn = 0;
@@ -67,13 +55,25 @@ private:
     int32 ColumnsLength = 0;
     int32 RowsLength = 0;
 
-	FTimerHandle FBlinkTimer;
+    int32 CurrentRow = 0;
+    int32 CurrentColumn = 0;
+
+	FTimerHandle BlinkTimer;
     
+    UPROPERTY()
+    TArray<UWidget*> MatrixRows;
+
     void PaintAll(const FColor& Color);
 
     FString RandomChar();    
 
+    void RandomizeMatrix();
+
+    void CreateKeyword();
+
     void PlaceKeyword();
     
     void PaintRowCellsInRange(TArray<UWidget*>& CellsInRow, const uint32 Begin, const uint32 Range, const FColor& Color);
+    
+    void Blink();
 };

@@ -15,9 +15,21 @@
 #include "Engine/World.h"
 #include "GameFramework/Actor.h"
 
+void UMiniGame::NativeOnInitialized()
+{
+    Super::NativeOnInitialized();
+
+    MatrixRows = Matrix->Rows->GetAllChildren();
+    RowsLength = MatrixRows.Num();
+    RandomizeMatrix();
+    MoveField(0,0);
+    CreateKeyword();
+    PlaceKeyword();
+    GetWorld()->GetTimerManager().SetTimer(BlinkTimer, this, &UMiniGame::Blink, BlinkingRate, true);
+}
+
 void UMiniGame::PaintAll(const FColor& Color)
 {
-	TArray<UWidget*> MatrixRows = Matrix->Rows->GetAllChildren();
     if (MatrixRows.Num() == 0) return;
 
     for (const auto& MatrixRow : MatrixRows)
@@ -43,16 +55,17 @@ void UMiniGame::CreateKeyword()
 	{
         Keyword += RandomChar();
 	}
-	PlaceKeyword();
+    if (KeywordToFind)
+    {
+        KeywordToFind->SetText(FText::FromString(Keyword));
+    }
 }
 
 void UMiniGame::RandomizeMatrix()
 {
-	TArray<UWidget*> MatrixRows = Matrix->Rows->GetAllChildren();
-    if (MatrixRows.Num() == 0) return;
+    if (RowsLength == 0) return;
     
-	RowsLength = MatrixRows.Num();
-	for (uint8 i = 0; i < MatrixRows.Num(); i++)
+	for (uint8 i = 0; i < RowsLength; i++)
 	{
 		UColumn* MatrixColumnContainer = Cast<UColumn>(MatrixRows[i]);
         if (!MatrixColumnContainer) continue;
@@ -74,34 +87,34 @@ void UMiniGame::RandomizeMatrix()
 
 void UMiniGame::MoveField(int32 X, int32 Y)
 {
-	if (X < 0 || Y < 0) return;
+    const auto ColumnToMove = CurrentColumn + X;
+    const auto RowToMove = CurrentRow + Y;
 
-	TArray<UWidget*> MatrixRows = Matrix->Rows->GetAllChildren();
+    if (ColumnToMove > ColumnsLength - KeywordLength || 
+        ColumnToMove < 0 ||
+        RowToMove > RowsLength - 1 ||
+        RowToMove < 0) return;
 
-	if (MatrixRows.Num() == 0 || RowsLength < 1 || Y + 1 > RowsLength) return;
-
-	const auto MatrixColumnContainer = Cast<UColumn>(MatrixRows[Y]);
+    const auto MatrixColumnContainer = Cast<UColumn>(MatrixRows[RowToMove]);
     if (!MatrixColumnContainer) return;
 
-	TArray<UWidget*> MatrixColumns = MatrixColumnContainer->Columns->GetAllChildren();
+    TArray<UWidget*> MatrixColumns = MatrixColumnContainer->Columns->GetAllChildren();
+    if (MatrixColumns.Num() == 0) return;
 
-	if (ColumnsLength < 1 || X + KeywordLength > ColumnsLength) return;
-    
     PaintAll(FColor::Black);
-    
-    PaintRowCellsInRange(MatrixColumns, X, KeywordLength, FColor::White);
 
-	CurrentColumn = X;
-	CurrentRow = Y;
+    PaintRowCellsInRange(MatrixColumns, ColumnToMove, KeywordLength, FColor::White);
+
+    CurrentColumn = ColumnToMove;
+    CurrentRow = RowToMove;
 }
 
 void UMiniGame::PlaceKeyword()
 {
+    if (RowsLength == 0) return;
+
     KeywordBeginsAtRow = FMath::RandRange(0, RowsLength - 1);
     KeywordBeginsAtColumn = FMath::RandRange(0, ColumnsLength - KeywordLength);
-    
-	TArray<UWidget*> MatrixRows = Matrix->Rows->GetAllChildren();
-    if (MatrixRows.Num() == 0) return;
     
     const auto MatrixColumnContainer = Cast<UColumn>(MatrixRows[KeywordBeginsAtRow]);
     if (!MatrixColumnContainer) return;
@@ -123,6 +136,10 @@ bool UMiniGame::CheckField()
 	bool bIsValidField = CurrentRow == KeywordBeginsAtRow && CurrentColumn == KeywordBeginsAtColumn;
     OnCheckField.Broadcast(bIsValidField);
     bIsValidField ? PaintAll(FColor::Green) : PaintAll(FColor::Red);
+    if (GetWorld())
+    {
+        GetWorld()->GetTimerManager().ClearTimer(BlinkTimer);
+    }
     return bIsValidField;
 }
 
@@ -130,13 +147,6 @@ void UMiniGame::Blink()
 {
 	RandomizeMatrix();
     PlaceKeyword();
-}
-
-void UMiniGame::StartBlinking()
-{
-	FTimerDelegate CustomDelegate;
-	CustomDelegate.BindUFunction(this, FName("Blink"));
-	GetWorld()->GetTimerManager().SetTimer(FBlinkTimer, CustomDelegate, BlinkingTime, true);
 }
 
 void UMiniGame::PaintRowCellsInRange(TArray<UWidget*>& CellsInRow, const uint32 Begin, const uint32 Range, const FColor& Color)
