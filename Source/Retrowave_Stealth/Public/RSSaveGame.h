@@ -15,8 +15,6 @@ class RETROWAVE_STEALTH_API URSSaveGame : public USaveGame
 	GENERATED_BODY()
 
 public:
-
 	UPROPERTY(VisibleAnywhere, Category = Save)
 	FTransform PlayerTransform;
-
 };

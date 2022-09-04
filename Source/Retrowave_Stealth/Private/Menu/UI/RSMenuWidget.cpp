@@ -10,6 +10,11 @@ void URSMenuWidget::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
     
+    if (ContinueGameButton)
+    {
+        ContinueGameButton->OnClicked.AddDynamic(this, &URSMenuWidget::OnContinueGame);
+    }
+
     if (StartPlayButton)
     {
         StartPlayButton->OnClicked.AddDynamic(this, &URSMenuWidget::OnStartPlay);
@@ -21,6 +26,23 @@ void URSMenuWidget::NativeOnInitialized()
     }
 }
     
+void URSMenuWidget::OnContinueGame()
+{
+    // check PlayerLocation != PlayerStart
+    if (!GetWorld()) return;
+    const auto RSGameInstance = GetWorld()->GetGameInstance<URSGameInstance>();
+
+    if (!RSGameInstance) return;
+
+    if (RSGameInstance->GetStartupLevelName().IsNone())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("No any StartLevel set yet"));
+        return;
+    }
+
+    UGameplayStatics::OpenLevel(this, RSGameInstance->GetStartupLevelName(), true, "?savegame=" + RSGameInstance->GetSaveSlotName());
+}
+
 void URSMenuWidget::OnStartPlay()
 {
     if (!GetWorld()) return;

@@ -15,6 +15,9 @@ class RETROWAVE_STEALTH_API URSMenuWidget : public UUserWidget
 
 protected:
     UPROPERTY(meta = (BindWidget))
+    UButton* ContinueGameButton;
+
+    UPROPERTY(meta = (BindWidget))
     UButton* StartPlayButton;
     
     UPROPERTY(meta = (BindWidget))
@@ -23,6 +26,9 @@ protected:
     virtual void NativeOnInitialized() override;
     
 private:
+    UFUNCTION()
+    void OnContinueGame();
+
     UFUNCTION()
     void OnStartPlay();
     

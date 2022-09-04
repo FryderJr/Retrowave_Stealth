@@ -8,8 +8,10 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/CapsuleComponent.h"
-
+#include "Player/RSPlayerController.h"
+#include "Camera/CameraActor.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Interactable/RSInteractableActor.h"
 
 DEFINE_LOG_CATEGORY_STATIC(RSBaseCharacter_LOG, All, All);
 
@@ -71,6 +73,14 @@ void ARSBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     PlayerInputComponent->BindAction<FOnCrouchSignature>("Crouch", IE_Released, this, &ARSBaseCharacter::UnCrouch, true);
     //PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &ARSBaseCharacter::StartCrouch);
     //PlayerInputComponent->BindAction("Crouch", IE_Released, this, &ARSBaseCharacter::StopCrouch);
+
+    PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ARSBaseCharacter::InteractWithObject);
+    PlayerInputComponent->BindAction("QuitTerminal", IE_Pressed, this, &ARSBaseCharacter::StopInteraction);
+}
+
+void ARSBaseCharacter::SetCurrentInteractableObject(ARSInteractableActor* InteractableActor)
+{
+    CurrentInteractableObject = InteractableActor;
 }
 
 void ARSBaseCharacter::MoveForward(float Amount)
@@ -116,5 +126,19 @@ void ARSBaseCharacter::OnCameraCollisionBeginOverlap(UPrimitiveComponent* Overla
 void ARSBaseCharacter::OnCameraCollisionEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
     //OtherComp->SetVisibility(true);
+}
+
+void ARSBaseCharacter::StopInteraction()
+{
+    if (!CurrentInteractableObject) return;
+    GetMesh()->SetOnlyOwnerSee(false);
+    CurrentInteractableObject->StopInteraction(this);
+}
+
+void ARSBaseCharacter::InteractWithObject()
+{
+    if (!CurrentInteractableObject) return;
+    GetMesh()->SetOnlyOwnerSee(true);
+    CurrentInteractableObject->InteractWithObject(this);
 }
 

@@ -7,6 +7,11 @@
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 
+void URSGameInstance::Init()
+{
+    Super::Init();
+}
+
 void URSGameInstance::SaveGame(FTransform PlayerTransform)
 {
     if (URSSaveGame* SaveGameInstance = Cast<URSSaveGame>(UGameplayStatics::CreateSaveGameObject(URSSaveGame::StaticClass())))
@@ -29,11 +34,6 @@ void URSGameInstance::SavedGame(const FString& SlotName, const int32 UserIndex, 
 
 }
 
-void URSGameInstance::LoadMap()
-{
-    UGameplayStatics::OpenLevel(this, GetStartupLevelName(), true, "?savegame=" + SaveSlotName);
-}
-
 void URSGameInstance::LoadGame()
 {
     if (URSSaveGame* LoadedGame = Cast<URSSaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlotName, 0)))
@@ -41,10 +41,9 @@ void URSGameInstance::LoadGame()
         for (FActorIterator It(GetWorld()); It; ++It)
         {
             AActor* Actor = *It;
-            if (Cast<APlayerStart>(Actor))
-            {
-                It->SetActorTransform(LoadedGame->PlayerTransform);
-            }
+            if (!Cast<APlayerStart>(Actor)) continue;
+               
+            It->SetActorTransform(LoadedGame->PlayerTransform);
         }
         //GetPrimaryPlayerController()->GetPawn()->SetActorTransform(LoadedGame->PlayerTransform);
         // The operation was successful, so LoadedGame now contains the data we saved earlier.

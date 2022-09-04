@@ -3,72 +3,77 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Row.h"
 #include "Blueprint/UserWidget.h"
 #include "MiniGame.generated.h"
 
-/**
- * 
- */
+class UCanvasPanel;
+class UTextBlock;
+class URow;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCheckFieldSignature, bool);
+
 UCLASS()
 class RETROWAVE_STEALTH_API UMiniGame : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UCanvasPanel* MatrixCanvas;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class URow* Matrix;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MiniGame)
-	int FieldLength = 5;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MiniGame)
-	FString Field = "";
-
-	TArray<TCHAR> Code;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = MiniGame)
-	int CurrentRow = 0;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = MiniGame)
-	int CurrentColumn = 0;
+    FOnCheckFieldSignature OnCheckField;
 
 	UFUNCTION(BlueprintCallable, Category = MiniGame)
-	void PaintAll();
-
-	FString RandomChar();
-
-	UFUNCTION(BlueprintCallable, Category = MiniGame)
-	void RandomizeField();
-
-	UFUNCTION(BlueprintCallable, Category = MiniGame)
-	void RandomizeMatrix();
-
-	UFUNCTION(BlueprintCallable, Category = MiniGame)
-	void MoveField(int X, int Y);
-
-	void PlaceField();
+	void MoveField(int32 X, int32 Y);
 
 	UFUNCTION(BlueprintCallable, Category = MiniGame)
 	bool CheckField();
 
-	UFUNCTION()
-	void Blink();
+protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+    UCanvasPanel* MatrixCanvas;
 
-	UFUNCTION(BlueprintCallable, Category = MiniGame)
-	void StartBlinking();
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+    URow* Matrix;
+
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* KeywordToFind;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MiniGame)
+    int KeywordLength = 5;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MiniGame)
+    float BlinkingRate = 4.f;
+    
+    virtual void NativeOnInitialized() override;
 
 private:
+    const FString SymbolsToFill = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890`-=][,./~!@#$%^&*()_+{}|:<>?";
 
-	size_t FieldRow = 0;
-	size_t FieldColumn = 0;
+    FString Keyword = "";
 
-	size_t ColumnsLength = 0;
-	size_t RowsLength = 0;
+    int32 KeywordBeginsAtRow = 0;
+    int32 KeywordBeginsAtColumn = 0;
 
-	FTimerHandle FBlinkTimer;
+    int32 ColumnsLength = 0;
+    int32 RowsLength = 0;
+
+    int32 CurrentRow = 0;
+    int32 CurrentColumn = 0;
+
+	FTimerHandle BlinkTimer;
+    
+    UPROPERTY()
+    TArray<UWidget*> MatrixRows;
+
+    void PaintAll(const FColor& Color);
+
+    FString RandomChar();    
+
+    void RandomizeMatrix();
+
+    void CreateKeyword();
+
+    void PlaceKeyword();
+    
+    void PaintRowCellsInRange(TArray<UWidget*>& CellsInRow, const uint32 Begin, const uint32 Range, const FColor& Color);
+    
+    void Blink();
 };
