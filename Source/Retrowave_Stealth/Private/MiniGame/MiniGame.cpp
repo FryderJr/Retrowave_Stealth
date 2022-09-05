@@ -143,6 +143,11 @@ bool UMiniGame::CheckField()
     return bIsValidField;
 }
 
+void UMiniGame::QuitMiniGame()
+{
+    OnQuitMiniGame.Broadcast();
+}
+
 void UMiniGame::Blink()
 {
 	RandomizeMatrix();

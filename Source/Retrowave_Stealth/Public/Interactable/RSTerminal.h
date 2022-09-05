@@ -8,6 +8,10 @@
 
 class UBoxComponent;
 class UWidgetComponent;
+class ACameraActor;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnInteractionStartSignature, ACameraActor*);
+DECLARE_MULTICAST_DELEGATE(FOnInteractionStopSignature);
 
 UCLASS()
 class RETROWAVE_STEALTH_API ARSTerminal : public ARSInteractableActor
@@ -16,6 +20,11 @@ class RETROWAVE_STEALTH_API ARSTerminal : public ARSInteractableActor
 	
 public:	
 	ARSTerminal();
+
+    virtual void Tick(float DeltaSeconds);
+
+    FOnInteractionStartSignature OnInteractionStart;
+    FOnInteractionStopSignature OnInteractionStop;
 
     bool GetHackedStatus() const { return bIsHackedSucces; };
     bool GetWorkingStatus() const { return bIsActive; };
@@ -33,9 +42,6 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Default")
     ACameraActor* TerminalCamera;
 
-    UPROPERTY(EditDefaultsOnly, meta = (ClampMin = 0.0f))
-    float CameraBlendTime;
-
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UWidgetComponent* MiniGameComponent;
 
@@ -45,8 +51,7 @@ protected:
 
     virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
-    virtual void InteractWithObject(ACharacter* Interactor) override;
-    virtual void StopInteraction(ACharacter* Interactor) override;
+    virtual void InteractWithObject() override;
 
 private:
     UPROPERTY(SaveGame)
@@ -55,5 +60,9 @@ private:
     UPROPERTY(SaveGame)
     bool bIsHackedSucces{false};
 
+    bool bInFocus{false};
+
     void OnCheckField(bool bIsValidField);
+
+    void OnQuitTerminal();
 };

@@ -75,12 +75,13 @@ void ARSBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     //PlayerInputComponent->BindAction("Crouch", IE_Released, this, &ARSBaseCharacter::StopCrouch);
 
     PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ARSBaseCharacter::InteractWithObject);
-    PlayerInputComponent->BindAction("QuitTerminal", IE_Pressed, this, &ARSBaseCharacter::StopInteraction);
 }
 
 void ARSBaseCharacter::SetCurrentInteractableObject(ARSInteractableActor* InteractableActor)
 {
-    CurrentInteractableObject = InteractableActor;
+    FString Test = InteractableActor ? InteractableActor->GetName() : "nullptr";
+    UE_LOG(LogTemp, Display, TEXT("actor gained % s "), *Test);
+    CurrentInteractableObject = Cast<ARSInteractableActor>(InteractableActor);
 }
 
 void ARSBaseCharacter::MoveForward(float Amount)
@@ -128,17 +129,13 @@ void ARSBaseCharacter::OnCameraCollisionEndOverlap(UPrimitiveComponent* Overlapp
     //OtherComp->SetVisibility(true);
 }
 
-void ARSBaseCharacter::StopInteraction()
-{
-    if (!CurrentInteractableObject) return;
-    GetMesh()->SetOnlyOwnerSee(false);
-    CurrentInteractableObject->StopInteraction(this);
-}
-
 void ARSBaseCharacter::InteractWithObject()
 {
+    FString TestString = CurrentInteractableObject ? CurrentInteractableObject->GetName() : "Now interactable object";
+    UE_LOG(LogTemp, Display, TEXT(" % s "), *TestString);
+    
     if (!CurrentInteractableObject) return;
     GetMesh()->SetOnlyOwnerSee(true);
-    CurrentInteractableObject->InteractWithObject(this);
+    CurrentInteractableObject->InteractWithObject();
 }
 

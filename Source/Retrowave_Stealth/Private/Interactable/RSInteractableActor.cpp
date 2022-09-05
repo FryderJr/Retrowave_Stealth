@@ -5,7 +5,7 @@
 
 ARSInteractableActor::ARSInteractableActor()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 }
 

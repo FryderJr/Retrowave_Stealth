@@ -19,6 +19,8 @@ public:
     FOnGameStateChagedSignature OnGameStateChanged;
 
     void InteractWithObject();
+
+    UFUNCTION(BlueprintCallable)
     void StopInteraction();
 
     void UpdateTerminalData();
@@ -37,5 +39,7 @@ private:
 
     FTerminalData CurrentTerminalData;
     
+    void InitTerminals();
     void SetGameState(ERSGameState State);
+    void OnInteractionStop();
 };

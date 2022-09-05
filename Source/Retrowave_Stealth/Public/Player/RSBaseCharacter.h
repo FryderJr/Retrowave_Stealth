@@ -42,8 +42,6 @@ public:
 
     void SetCurrentInteractableObject(ARSInteractableActor* InteractableActor);
 
-    void StopInteraction();
-
 private:
     UPROPERTY()
     ARSInteractableActor* CurrentInteractableObject{nullptr};
