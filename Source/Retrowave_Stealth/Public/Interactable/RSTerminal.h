@@ -49,7 +49,10 @@ protected:
     virtual void StopInteraction(ACharacter* Interactor) override;
 
 private:
+    UPROPERTY(SaveGame)
     bool bIsActive{true};
+
+    UPROPERTY(SaveGame)
     bool bIsHackedSucces{false};
 
     void OnCheckField(bool bIsValidField);
