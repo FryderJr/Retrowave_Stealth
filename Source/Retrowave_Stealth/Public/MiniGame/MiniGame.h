@@ -11,6 +11,7 @@ class UTextBlock;
 class URow;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCheckFieldSignature, bool);
+DECLARE_MULTICAST_DELEGATE(FOnQuitMiniGameSignature);
 
 UCLASS()
 class RETROWAVE_STEALTH_API UMiniGame : public UUserWidget
@@ -19,12 +20,18 @@ class RETROWAVE_STEALTH_API UMiniGame : public UUserWidget
 
 public:
     FOnCheckFieldSignature OnCheckField;
+    FOnQuitMiniGameSignature OnQuitMiniGame;
 
 	UFUNCTION(BlueprintCallable, Category = MiniGame)
 	void MoveField(int32 X, int32 Y);
 
 	UFUNCTION(BlueprintCallable, Category = MiniGame)
 	bool CheckField();
+    
+    UFUNCTION(BlueprintCallable, Category = MiniGame)
+    void QuitMiniGame();
+
+    void StartBlinking();
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))

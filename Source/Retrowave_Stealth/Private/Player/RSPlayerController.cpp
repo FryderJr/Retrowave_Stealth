@@ -4,15 +4,24 @@
 #include "RSGameMode.h"
 #include "RSBaseCharacter.h"
 
+#include "EngineUtils.h"
+#include "Interactable/RSTerminal.h"
+#include "Camera/CameraActor.h"
+
 void ARSPlayerController::BeginPlay()
 {
     Super::BeginPlay();
-    if (GetWorld())
+    check(GetWorld());
+
+    if (const auto GameMode = Cast<ARSGameMode>(GetWorld()->GetAuthGameMode()))
     {
-        if (const auto GameMode = Cast<ARSGameMode>(GetWorld()->GetAuthGameMode()))
-        {
-            GameMode->OnGameStateChanged.AddUObject(this, &ARSPlayerController::OnGameStateChanged);
-        }
+        GameMode->OnGameStateChanged.AddUObject(this, &ARSPlayerController::OnGameStateChanged);
+    }
+
+    for (const auto& Terminal : TActorRange<ARSTerminal>(GetWorld()))
+    {
+        Terminal->OnInteractionStart.AddUObject(this, &ARSPlayerController::OnInteractionStart);
+        Terminal->OnInteractionStop.AddUObject(this, &ARSPlayerController::OnInteractionStop);
     }
 }
 
@@ -37,17 +46,22 @@ void ARSPlayerController::OnGameStateChanged(ERSGameState State)
     {
         SetInputMode(FInputModeGameOnly());
         bShowMouseCursor = false;
-        
-        const auto BaseCharacter = Cast<ARSBaseCharacter>(GetPawn());
-        if (BaseCharacter)
-        {
-            BaseCharacter->StopInteraction();
-        }
     }
     else
     {
         SetInputMode(FInputModeUIOnly());
         bShowMouseCursor = true;
     }
+}
+
+void ARSPlayerController::OnInteractionStart(ACameraActor* Camera)
+{
+    if (!Camera) return;
+    SetViewTargetWithBlend(Camera, CameraBlendTime, EViewTargetBlendFunction::VTBlend_Linear, 0.f, true);
+}
+
+void ARSPlayerController::OnInteractionStop()
+{
+    SetViewTargetWithBlend(GetPawn(), CameraBlendTime, EViewTargetBlendFunction::VTBlend_Linear, 0.f, true);
 }
 
