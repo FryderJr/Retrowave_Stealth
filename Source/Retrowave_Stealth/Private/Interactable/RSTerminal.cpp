@@ -8,6 +8,8 @@
 #include "Components/WidgetComponent.h"
 #include "MiniGame/MiniGame.h"
 
+bool ARSTerminal::bIsTipActive = false;
+
 ARSTerminal::ARSTerminal()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -33,7 +35,7 @@ void ARSTerminal::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
-    if (bInFocus)
+    if (bInFocus && !bIsTipActive)
     {
         if (const auto MiniGameWidget = Cast<UMiniGame>(MiniGameComponent->GetUserWidgetObject()))
         {
@@ -80,6 +82,12 @@ void ARSTerminal::InteractWithObject()
     OnInteractionStart.Broadcast(TerminalCamera);
 
     bInFocus = true;
+
+    const auto MiniGameWidget = Cast<UMiniGame>(MiniGameComponent->GetUserWidgetObject());
+    if (MiniGameWidget)
+    {
+        MiniGameWidget->StartBlinking();
+    }
 }
 
 void ARSTerminal::OnCheckField(bool bIsValidField)

@@ -58,18 +58,10 @@ void ARSPlayerController::OnInteractionStart(ACameraActor* Camera)
 {
     if (!Camera) return;
     SetViewTargetWithBlend(Camera, CameraBlendTime, EViewTargetBlendFunction::VTBlend_Linear, 0.f, true);
-
-    const auto RSGameMode = Cast<ARSGameMode>(GetWorld()->GetAuthGameMode());
-    if (!RSGameMode) return;
-    RSGameMode->InteractWithObject();
 }
 
 void ARSPlayerController::OnInteractionStop()
 {
     SetViewTargetWithBlend(GetPawn(), CameraBlendTime, EViewTargetBlendFunction::VTBlend_Linear, 0.f, true);
-
-    const auto RSGameMode = Cast<ARSGameMode>(GetWorld()->GetAuthGameMode());
-    if (!RSGameMode) return;
-    RSGameMode->StopInteraction();
 }
 

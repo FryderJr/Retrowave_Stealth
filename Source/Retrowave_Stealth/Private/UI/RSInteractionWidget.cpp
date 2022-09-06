@@ -7,17 +7,28 @@
 
 void URSInteractionWidget::InitMiniGame()
 {
-    //if (!MiniGameBox) return;
-    //MiniGameBox->ClearChildren();
+    if (!MiniGameBox) return;
+    MiniGameBox->ClearChildren();
 
-    //const auto MiniGame = CreateWidget<UMiniGame>(GetWorld(), MiniGameWidgetClass);
-    //if (MiniGame)
-    //{
-    //    MiniGameBox->AddChild(MiniGame);
-    //}
+    const auto MiniGame = CreateWidget<UUserWidget>(GetWorld(), TutorialWidgetClass);
+    if (MiniGame)
+    {
+        MiniGameBox->AddChild(MiniGame);
+    }
 }
 
 void URSInteractionWidget::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
+
+    if (TutorialBox)
+    {
+        TutorialBox->ClearChildren();
+        
+        const auto Tutorial = CreateWidget<UUserWidget>(GetWorld(), TutorialWidgetClass);
+        if (Tutorial)
+        {
+            TutorialBox->AddChild(Tutorial);
+        }
+    }
 }

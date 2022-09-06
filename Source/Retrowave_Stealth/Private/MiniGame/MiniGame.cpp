@@ -25,7 +25,6 @@ void UMiniGame::NativeOnInitialized()
     MoveField(0,0);
     CreateKeyword();
     PlaceKeyword();
-    GetWorld()->GetTimerManager().SetTimer(BlinkTimer, this, &UMiniGame::Blink, BlinkingRate, true);
 }
 
 void UMiniGame::PaintAll(const FColor& Color)
@@ -146,6 +145,11 @@ bool UMiniGame::CheckField()
 void UMiniGame::QuitMiniGame()
 {
     OnQuitMiniGame.Broadcast();
+}
+
+void UMiniGame::StartBlinking()
+{
+    GetWorld()->GetTimerManager().SetTimer(BlinkTimer, this, &UMiniGame::Blink, BlinkingRate, true);
 }
 
 void UMiniGame::Blink()

@@ -31,6 +31,8 @@ public:
     UFUNCTION(BlueprintCallable, Category = MiniGame)
     void QuitMiniGame();
 
+    void StartBlinking();
+
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
     UCanvasPanel* MatrixCanvas;

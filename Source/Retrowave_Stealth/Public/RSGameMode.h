@@ -18,6 +18,7 @@ public:
     
     FOnGameStateChagedSignature OnGameStateChanged;
 
+    UFUNCTION(BlueprintCallable)
     void InteractWithObject();
 
     UFUNCTION(BlueprintCallable)
@@ -41,5 +42,7 @@ private:
     
     void InitTerminals();
     void SetGameState(ERSGameState State);
+
+    void OnInteractionStart(ACameraActor* Camera);
     void OnInteractionStop();
 };

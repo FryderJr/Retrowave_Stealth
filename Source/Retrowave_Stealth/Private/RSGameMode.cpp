@@ -25,6 +25,7 @@ void ARSGameMode::InteractWithObject()
 void ARSGameMode::StopInteraction()
 {
     SetGameState(ERSGameState::InProgress);
+    UpdateTerminalData();
 }
 
 void ARSGameMode::UpdateTerminalData()
@@ -87,7 +88,7 @@ void ARSGameMode::InitTerminals()
     for (const auto& Terminal : TActorRange<ARSTerminal>(GetWorld()))
     {
         ++CurrentTerminalData.TerminalsNum;
-        //Terminal->OnInteractionStart.AddUObject(this, &ARSGameMode::InteractWithObject);
+        Terminal->OnInteractionStart.AddUObject(this, &ARSGameMode::OnInteractionStart);
         Terminal->OnInteractionStop.AddUObject(this, &ARSGameMode::OnInteractionStop);
     }
 }
@@ -101,8 +102,13 @@ void ARSGameMode::SetGameState(ERSGameState State)
     OnGameStateChanged.Broadcast(RetrowaveGameState);
 }
 
+void ARSGameMode::OnInteractionStart(ACameraActor* Camera)
+{
+    SetGameState(ERSGameState::Interact);
+}
+
 void ARSGameMode::OnInteractionStop()
 {
-    StopInteraction();
+    SetGameState(ERSGameState::InProgress);
     UpdateTerminalData();
 }
