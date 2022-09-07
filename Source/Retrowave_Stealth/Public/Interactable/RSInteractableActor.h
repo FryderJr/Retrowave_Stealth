@@ -15,8 +15,9 @@ class RETROWAVE_STEALTH_API ARSInteractableActor : public AActor, public IRSActo
 public:	
 	ARSInteractableActor();
 
-    virtual void InteractWithObject(ACharacter* Interactor) {};
-    virtual void StopInteraction(ACharacter* Interactor) {};
+    virtual void Tick(float DeltaSeconds) { Super::Tick(DeltaSeconds); };
+
+    virtual void InteractWithObject() {};
 
 protected:
 	virtual void BeginPlay() override;

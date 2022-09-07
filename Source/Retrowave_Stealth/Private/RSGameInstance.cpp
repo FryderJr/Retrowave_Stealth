@@ -70,7 +70,6 @@ void URSGameInstance::LoadGame()
         for (FActorIterator It(GetWorld()); It; ++It)
         {
             AActor* Actor = *It;
-
             if (Cast<APlayerStart>(Actor))
             {
                 It->SetActorTransform(LoadedGame->PlayerTransform);

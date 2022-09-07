@@ -25,6 +25,7 @@ void ARSGameMode::InteractWithObject()
 void ARSGameMode::StopInteraction()
 {
     SetGameState(ERSGameState::InProgress);
+    UpdateTerminalData();
 }
 
 void ARSGameMode::UpdateTerminalData()
@@ -77,10 +78,7 @@ void ARSGameMode::StartPlay()
     Super::StartPlay();
     SetGameState(ERSGameState::InProgress);
 
-    for (const auto& Terminal : TActorRange<ARSTerminal>(GetWorld()))
-    {
-        ++CurrentTerminalData.TerminalsNum;
-    }
+    InitTerminals();
     UpdateTerminalData();
 }
 
@@ -89,13 +87,12 @@ void ARSGameMode::InitGame(const FString& MapName, const FString& Options, FStri
     Super::InitGame(MapName, Options, ErrorMessage);
     
     FString SelectedSaveSlot = UGameplayStatics::ParseOption(Options, "SaveGame");
-    if (SelectedSaveSlot.Len() > 0)
-    {
-        URSGameInstance* MyGameInstance = Cast<URSGameInstance>(GetGameInstance());
-        if (!MyGameInstance) return;
+    if (SelectedSaveSlot.Len() <= 0) return;
+    
+    URSGameInstance* MyGameInstance = Cast<URSGameInstance>(GetGameInstance());
+    if (!MyGameInstance) return;
         
-        MyGameInstance->LoadGame();
-    }
+    MyGameInstance->LoadGame();
 }
 
 bool ARSGameMode::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate)
@@ -118,6 +115,18 @@ bool ARSGameMode::ClearPause()
     return bIsPauseClear;
 }
 
+void ARSGameMode::InitTerminals()
+{
+    if (!GetWorld()) return;
+
+    for (const auto& Terminal : TActorRange<ARSTerminal>(GetWorld()))
+    {
+        ++CurrentTerminalData.TerminalsNum;
+        Terminal->OnInteractionStart.AddUObject(this, &ARSGameMode::OnInteractionStart);
+        Terminal->OnInteractionStop.AddUObject(this, &ARSGameMode::OnInteractionStop);
+    }
+}
+
 void ARSGameMode::SetGameState(ERSGameState State)
 {
     if (RetrowaveGameState == State) return;
@@ -125,4 +134,15 @@ void ARSGameMode::SetGameState(ERSGameState State)
     RetrowaveGameState = State;
     
     OnGameStateChanged.Broadcast(RetrowaveGameState);
+}
+
+void ARSGameMode::OnInteractionStart(ACameraActor* Camera)
+{
+    SetGameState(ERSGameState::Interact);
+}
+
+void ARSGameMode::OnInteractionStop()
+{
+    SetGameState(ERSGameState::InProgress);
+    UpdateTerminalData();
 }

@@ -18,7 +18,10 @@ public:
     
     FOnGameStateChagedSignature OnGameStateChanged;
 
+    UFUNCTION(BlueprintCallable)
     void InteractWithObject();
+
+    UFUNCTION(BlueprintCallable)
     void StopInteraction();
 
     void UpdateTerminalData();
@@ -62,5 +65,9 @@ private:
 
     TArray<AActor*> PlayerAlertedBy = {};
     
+    void InitTerminals();
     void SetGameState(ERSGameState State);
+
+    void OnInteractionStart(ACameraActor* Camera);
+    void OnInteractionStop();
 };
