@@ -29,4 +29,23 @@ struct FTerminalData
     int32 HackedSuccesTerminalsNum{0};
 };
 
+USTRUCT()
+struct FActorSaveData
+{
+    GENERATED_BODY()
+
+public:
+    /* Identifier for which Actor this belongs to */
+    UPROPERTY()
+    FName ActorName;
+
+    /* For movable Actors, keep location,rotation,scale. */
+    UPROPERTY()
+    FTransform Transform;
+
+    /* Contains all 'SaveGame' marked variables of the Actor */
+    UPROPERTY()
+    TArray<uint8> ByteData;
+};
+
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "RSTypes.h"
 #include "GameFramework/SaveGame.h"
 #include "RSSaveGame.generated.h"
 
@@ -17,4 +18,7 @@ class RETROWAVE_STEALTH_API URSSaveGame : public USaveGame
 public:
 	UPROPERTY(VisibleAnywhere, Category = Save)
 	FTransform PlayerTransform;
+
+	UPROPERTY(VisibleAnywhere, Category = Save)
+	TArray<FActorSaveData> SavedActors;
 };

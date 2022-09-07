@@ -2,10 +2,12 @@
 
 
 #include "RSGameInstance.h"
+#include "RSActorSave.h"
 #include "RSSaveGame.h"
 #include "EngineUtils.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
+#include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 
 void URSGameInstance::Init()
 {
@@ -16,16 +18,43 @@ void URSGameInstance::SaveGame(FTransform PlayerTransform)
 {
     if (URSSaveGame* SaveGameInstance = Cast<URSSaveGame>(UGameplayStatics::CreateSaveGameObject(URSSaveGame::StaticClass())))
     {
+        SaveGameInstance->SavedActors.Empty();
         // Set up the (optional) delegate.
         FAsyncSaveGameToSlotDelegate SavedDelegate;
         // USomeUObjectClass::SaveGameDelegateFunction is a void function that takes the following parameters: const FString& SlotName, const int32 UserIndex, bool bSuccess
         SavedDelegate.BindUObject(this, &URSGameInstance::SavedGame);
 
+        for (FActorIterator It(GetWorld()); It; ++It)
+        {
+            AActor* Actor = *It;
+            // Only interested in our 'gameplay actors', skip actors that are being destroyed
+            // Note: You might instead use a dedicated SavableObject interface for Actors you want to save instead of re-using GameplayInterface
+            if (Actor->IsPendingKill() || !Actor->Implements<URSActorSave>())
+            {
+                continue;
+            }
+
+            FActorSaveData ActorData;
+            ActorData.ActorName = Actor->GetFName();
+            ActorData.Transform = Actor->GetActorTransform();
+
+            // Pass the array to fill with data from Actor
+            FMemoryWriter MemWriter(ActorData.ByteData);
+
+            FObjectAndNameAsStringProxyArchive Ar(MemWriter, true);
+            // Find only variables with UPROPERTY(SaveGame)
+            Ar.ArIsSaveGame = true;
+            // Converts Actor's SaveGame UPROPERTIES into binary array
+            Actor->Serialize(Ar);
+
+            SaveGameInstance->SavedActors.Add(ActorData);
+        }
+
         // Set data on the savegame object.
         SaveGameInstance->PlayerTransform = PlayerTransform;
 
         // Start async save process.
-        UGameplayStatics::AsyncSaveGameToSlot(SaveGameInstance, SaveSlotName, 0, SavedDelegate);
+        UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveSlotName, 0);
     }
 }
 
@@ -41,9 +70,32 @@ void URSGameInstance::LoadGame()
         for (FActorIterator It(GetWorld()); It; ++It)
         {
             AActor* Actor = *It;
-            if (!Cast<APlayerStart>(Actor)) continue;
-               
-            It->SetActorTransform(LoadedGame->PlayerTransform);
+
+            if (Cast<APlayerStart>(Actor))
+            {
+                It->SetActorTransform(LoadedGame->PlayerTransform);
+            }
+
+            if (!Actor->Implements<URSActorSave>()) continue;
+
+            for (FActorSaveData ActorData : LoadedGame->SavedActors)
+            {
+                if (ActorData.ActorName == Actor->GetFName())
+                {
+                    Actor->SetActorTransform(ActorData.Transform);
+
+                    FMemoryReader MemReader(ActorData.ByteData);
+
+                    FObjectAndNameAsStringProxyArchive Ar(MemReader, true);
+                    Ar.ArIsSaveGame = true;
+                    // Convert binary array back into actor's variables
+                    Actor->Serialize(Ar);
+
+                    //URSActorSave::Execute_OnActorLoaded(Actor);
+
+                    break;
+                }
+            }
         }
         //GetPrimaryPlayerController()->GetPawn()->SetActorTransform(LoadedGame->PlayerTransform);
         // The operation was successful, so LoadedGame now contains the data we saved earlier.

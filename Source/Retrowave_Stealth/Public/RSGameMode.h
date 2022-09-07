@@ -23,6 +23,27 @@ public:
 
     void UpdateTerminalData();
 
+    UFUNCTION(BlueprintImplementableEvent, Category = Game)
+    void PlayerStatusChanged(int32 SpottedNum, int32 AlertedNum);
+
+    UFUNCTION(BlueprintCallable, Category = Game)
+    void AddSpottedBy(AActor* Enemy);
+
+    UFUNCTION(BlueprintCallable, Category = Game)
+    void AddAlertedBy(AActor* Enemy);
+
+    UFUNCTION(BlueprintCallable, Category = Game)
+    void DeleteSpottedBy(AActor* Enemy);
+
+    UFUNCTION(BlueprintCallable, Category = Game)
+    void DeleteAlertedBy(AActor* Enemy);
+
+    UFUNCTION(BlueprintCallable, Category = Game)
+    int32 GetSpottedByNum();
+
+    UFUNCTION(BlueprintCallable, Category = Game)
+    int32 GetAlertedByNum();
+
     UFUNCTION(BlueprintCallable, Category = "UI")
     FTerminalData GetCurrentTerminalData() const { return CurrentTerminalData; };
     
@@ -36,6 +57,10 @@ private:
     ERSGameState RetrowaveGameState = ERSGameState::WaitingToStart;
 
     FTerminalData CurrentTerminalData;
+
+    TArray<AActor*> PlayerSpottedBy = {};
+
+    TArray<AActor*> PlayerAlertedBy = {};
     
     void SetGameState(ERSGameState State);
 };

@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "RSActorSave.h"
 #include "GameFramework/Actor.h"
 #include "RSInteractableActor.generated.h"
 
 UCLASS()
-class RETROWAVE_STEALTH_API ARSInteractableActor : public AActor
+class RETROWAVE_STEALTH_API ARSInteractableActor : public AActor, public IRSActorSave
 {
 	GENERATED_BODY()
 	
