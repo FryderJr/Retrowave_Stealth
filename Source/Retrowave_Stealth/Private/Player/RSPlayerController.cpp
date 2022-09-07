@@ -45,11 +45,13 @@ void ARSPlayerController::OnGameStateChanged(ERSGameState State)
     if (State == ERSGameState::InProgress)
     {
         SetInputMode(FInputModeGameOnly());
+        EnableInput(this);  /////
         bShowMouseCursor = false;
     }
     else
     {
         SetInputMode(FInputModeUIOnly());
+        DisableInput(this); /////
         bShowMouseCursor = true;
     }
 }

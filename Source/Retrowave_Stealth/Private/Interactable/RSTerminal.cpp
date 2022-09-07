@@ -86,6 +86,7 @@ void ARSTerminal::InteractWithObject()
     const auto MiniGameWidget = Cast<UMiniGame>(MiniGameComponent->GetUserWidgetObject());
     if (MiniGameWidget)
     {
+        MiniGameWidget->ShowTutorial();
         MiniGameWidget->StartBlinking();
     }
 }

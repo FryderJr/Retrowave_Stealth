@@ -19,6 +19,8 @@ void UMiniGame::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
 
+    InitSlides();
+
     MatrixRows = Matrix->Rows->GetAllChildren();
     RowsLength = MatrixRows.Num();
     RandomizeMatrix();
@@ -100,7 +102,7 @@ void UMiniGame::MoveField(int32 X, int32 Y)
     TArray<UWidget*> MatrixColumns = MatrixColumnContainer->Columns->GetAllChildren();
     if (MatrixColumns.Num() == 0) return;
 
-    PaintAll(FColor::Black);
+    PaintAll(FColor::Transparent);
 
     PaintRowCellsInRange(MatrixColumns, ColumnToMove, KeywordLength, FColor::White);
 
@@ -147,6 +149,28 @@ void UMiniGame::QuitMiniGame()
     OnQuitMiniGame.Broadcast();
 }
 
+void UMiniGame::ShowTutorial()
+{
+    PlayAnimation(TutorialAnimation);
+}
+
+bool UMiniGame::NextTutorialSlide()
+{
+    const bool bIsFinished = CurrentSlideIndex == TutorialSlides.Num() - 1;
+
+    if (!bIsFinished)
+    {
+        CurrentSlideIndex = ++CurrentSlideIndex % TutorialSlides.Num();
+        CurrentTutorialSlide = TutorialSlides[CurrentSlideIndex];
+    }
+    else
+    {
+        PlayAnimationReverse(TutorialAnimation, 3.f);
+    }
+    
+    return bIsFinished;
+}
+
 void UMiniGame::StartBlinking()
 {
     GetWorld()->GetTimerManager().SetTimer(BlinkTimer, this, &UMiniGame::Blink, BlinkingRate, true);
@@ -156,6 +180,13 @@ void UMiniGame::Blink()
 {
 	RandomizeMatrix();
     PlaceKeyword();
+}
+
+void UMiniGame::InitSlides()
+{
+    CurrentSlideIndex = 0;
+    if (TutorialSlides.Num() == 0) return;
+    CurrentTutorialSlide = TutorialSlides[CurrentSlideIndex];
 }
 
 void UMiniGame::PaintRowCellsInRange(TArray<UWidget*>& CellsInRow, const uint32 Begin, const uint32 Range, const FColor& Color)

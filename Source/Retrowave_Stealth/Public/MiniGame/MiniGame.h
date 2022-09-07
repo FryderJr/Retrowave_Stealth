@@ -6,9 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "MiniGame.generated.h"
 
-class UCanvasPanel;
 class UTextBlock;
 class URow;
+class UTexture2D;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCheckFieldSignature, bool);
 DECLARE_MULTICAST_DELEGATE(FOnQuitMiniGameSignature);
@@ -31,11 +31,23 @@ public:
     UFUNCTION(BlueprintCallable, Category = MiniGame)
     void QuitMiniGame();
 
+    UFUNCTION(BlueprintCallable, Category = "Tutorial")
+    void ShowTutorial();
+
+    UFUNCTION(BlueprintCallable, Category = "Tutorial")
+    bool NextTutorialSlide();
+
+    UFUNCTION(BlueprintCallable, Category = "Tutorial")
+    UTexture2D* GetCurrentTutorialSlide() const { return CurrentTutorialSlide; };
+
     void StartBlinking();
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-    UCanvasPanel* MatrixCanvas;
+    UPROPERTY(Transient, meta = (BindWidgetAnim))
+    UWidgetAnimation* TutorialAnimation;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    TArray<UTexture2D*> TutorialSlides;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
     URow* Matrix;
@@ -70,6 +82,10 @@ private:
     UPROPERTY()
     TArray<UWidget*> MatrixRows;
 
+    UPROPERTY()
+    UTexture2D* CurrentTutorialSlide;
+    uint8 CurrentSlideIndex;
+
     void PaintAll(const FColor& Color);
 
     FString RandomChar();    
@@ -83,4 +99,6 @@ private:
     void PaintRowCellsInRange(TArray<UWidget*>& CellsInRow, const uint32 Begin, const uint32 Range, const FColor& Color);
     
     void Blink();
+
+    void InitSlides();
 };

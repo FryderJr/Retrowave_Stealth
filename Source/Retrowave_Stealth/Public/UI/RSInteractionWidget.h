@@ -18,17 +18,17 @@ public:
     void InitMiniGame();
 	
 protected:
-    UPROPERTY(meta = (BindWidget))
-    UHorizontalBox* MiniGameBox;
+    //UPROPERTY(meta = (BindWidget))
+    //UHorizontalBox* MiniGameBox;
 
-    UPROPERTY(meta = (BindWidget))
-    UHorizontalBox* TutorialBox;
+    //UPROPERTY(meta = (BindWidget))
+    //UHorizontalBox* TutorialBox;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
-    TSubclassOf<UUserWidget> MiniGameWidgetClass;
+    //UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    //TSubclassOf<UUserWidget> MiniGameWidgetClass;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
-    TSubclassOf<UUserWidget> TutorialWidgetClass;
+    //UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    //TSubclassOf<UUserWidget> TutorialWidgetClass;
 
     virtual void NativeOnInitialized() override;
 };
