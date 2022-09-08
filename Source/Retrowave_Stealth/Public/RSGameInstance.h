@@ -16,6 +16,8 @@ public:
     
     FName GetStartupLevelName() const { return StartupLevelName; };
     FName GetMenuLevelName() const { return MenuLevelName; };
+
+    UFUNCTION(BlueprintCallable, Category = "Game")
     FString GetSaveSlotName() const { return SaveSlotName; };
 
     UFUNCTION(BlueprintCallable, Category = "Game")
