@@ -45,6 +45,40 @@ void ARSGameMode::UpdateTerminalData()
     }
 }
 
+void ARSGameMode::AddSpottedBy(AActor* Enemy)
+{
+    PlayerSpottedBy.AddUnique(Enemy);
+    PlayerStatusChanged(GetSpottedByNum(), GetAlertedByNum());
+}
+
+void ARSGameMode::AddAlertedBy(AActor* Enemy)
+{
+    PlayerAlertedBy.AddUnique(Enemy);
+    PlayerStatusChanged(GetSpottedByNum(), GetAlertedByNum());
+}
+
+void ARSGameMode::DeleteSpottedBy(AActor* Enemy)
+{
+    PlayerSpottedBy.Remove(Enemy);
+    PlayerStatusChanged(GetSpottedByNum(), GetAlertedByNum());
+}
+
+void ARSGameMode::DeleteAlertedBy(AActor* Enemy)
+{
+    PlayerAlertedBy.Remove(Enemy);
+    PlayerStatusChanged(GetSpottedByNum(), GetAlertedByNum());
+}
+
+int32 ARSGameMode::GetSpottedByNum()
+{
+    return PlayerSpottedBy.Num();
+}
+
+int32 ARSGameMode::GetAlertedByNum()
+{
+    return PlayerAlertedBy.Num();
+}
+
 void ARSGameMode::StartPlay()
 {
     Super::StartPlay();
