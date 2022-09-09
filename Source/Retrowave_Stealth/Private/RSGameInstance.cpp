@@ -52,6 +52,7 @@ void URSGameInstance::SaveGame(FTransform PlayerTransform)
             Actor->Serialize(Ar);
 
             SaveGameInstance->SavedActors.Add(ActorData);
+            UE_LOG(LogTemp, Display, TEXT("URSGameInstance: SaveTerminalData"));
         }
 
         // Set data on the savegame object.
@@ -59,6 +60,7 @@ void URSGameInstance::SaveGame(FTransform PlayerTransform)
 
         // Start async save process.
         UGameplayStatics::AsyncSaveGameToSlot(CurrentSaveGame, SaveSlotName, 0, SavedDelegate);
+    }
 }
 
 void URSGameInstance::SavedGame(const FString& SlotName, const int32 UserIndex, bool bSuccess)
@@ -117,6 +119,8 @@ void URSGameInstance::LoadGame()
             {
                 if (ActorData.ActorName == Actor->GetFName())
                 {
+                    UE_LOG(LogTemp, Display, TEXT("URSGameInstance: LoadTerminalData %s"), *Actor->GetName());
+
                     Actor->SetActorTransform(ActorData.Transform);
 
                     FMemoryReader MemReader(ActorData.ByteData);
@@ -126,7 +130,7 @@ void URSGameInstance::LoadGame()
                     // Convert binary array back into actor's variables
                     Actor->Serialize(Ar);
 
-                    //URSActorSave::Execute_OnActorLoaded(Actor);
+                    IRSActorSave::Execute_OnActorLoaded(Actor);
 
                     break;
                 }

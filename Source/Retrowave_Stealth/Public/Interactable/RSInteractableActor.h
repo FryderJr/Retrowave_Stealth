@@ -19,6 +19,8 @@ public:
 
     virtual void InteractWithObject() {};
 
+    virtual void OnActorLoaded_Implementation() { UE_LOG(LogTemp, Display, TEXT("ARSInteractableActor OnActorLoaded")); };
+
 protected:
 	virtual void BeginPlay() override;
 };

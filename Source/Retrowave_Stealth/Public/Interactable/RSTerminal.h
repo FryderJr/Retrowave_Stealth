@@ -56,6 +56,8 @@ protected:
 
     virtual void InteractWithObject() override;
 
+    virtual void OnActorLoaded_Implementation() override;
+
 private:
     UPROPERTY(SaveGame)
     bool bIsActive{true};

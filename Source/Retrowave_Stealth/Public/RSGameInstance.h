@@ -34,7 +34,7 @@ public:
     void SavedGame(const FString& SlotName, const int32 UserIndex, bool bSuccess);
 
     //UFUNCTION(BlueprintCallable, Category = "Game")
-    void SaveTerminalData();
+    //void SaveTerminalData();
 
     UFUNCTION(BlueprintCallable, Category = "Game")
     void LoadGame();

@@ -48,6 +48,8 @@ void ARSTerminal::BeginPlay()
 {
 	Super::BeginPlay();
 
+    UE_LOG(LogTemp, Display, TEXT("Terminal at begin play is active: %s"), (bIsActive ? TEXT("true") : TEXT("false")));
+
     const auto MiniGameWidget = Cast<UMiniGame>(MiniGameComponent->GetUserWidgetObject());
     if (MiniGameWidget)
     {
@@ -89,6 +91,12 @@ void ARSTerminal::InteractWithObject()
         MiniGameWidget->ShowTutorial();
         MiniGameWidget->StartBlinking();
     }
+}
+
+void ARSTerminal::OnActorLoaded_Implementation()
+{
+    UE_LOG(LogTemp, Display, TEXT("ARSTerminal OnActorLoaded"));
+    UE_LOG(LogTemp, Display, TEXT("Active: %s"), (bIsActive ? TEXT("true") : TEXT("false")));
 }
 
 void ARSTerminal::OnCheckField(bool bIsValidField)

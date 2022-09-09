@@ -29,7 +29,6 @@ struct FTerminalData
     int32 HackedSuccesTerminalsNum{0};
 };
 
-<<<<<<< HEAD
 USTRUCT(BlueprintType)
 struct FDialogData
 {
