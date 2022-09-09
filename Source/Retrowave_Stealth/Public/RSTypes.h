@@ -29,4 +29,28 @@ struct FTerminalData
     int32 HackedSuccesTerminalsNum{0};
 };
 
+USTRUCT(BlueprintType)
+struct FDialogData
+{
+    GENERATED_USTRUCT_BODY()
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Dialog")
+    FText Nickname;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Dialog")
+    FText Expression;
+};
+
+USTRUCT(BlueprintType)
+struct FActorSaveData
+{
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY()
+    FName ActorName;
+    /* For movable Actors, keep location,rotation,scale. */
+    UPROPERTY()
+    FTransform Transform;
+    /* Contains all 'SaveGame' marked variables of the Actor */
+    UPROPERTY()
+    TArray<uint8> ByteData;
+};

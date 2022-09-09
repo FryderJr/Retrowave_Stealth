@@ -37,6 +37,12 @@ void ARSGameMode::UpdateTerminalData()
         CurrentTerminalData.ActiveTerminalsNum += Terminal->GetWorkingStatus();
         CurrentTerminalData.HackedSuccesTerminalsNum += Terminal->GetHackedStatus();
     }
+
+    const auto MyGameInstance = Cast<URSGameInstance>(GetGameInstance());
+    if (MyGameInstance)
+    {
+        MyGameInstance->SaveTerminalData();
+    }
 }
 
 void ARSGameMode::StartPlay()
@@ -45,7 +51,7 @@ void ARSGameMode::StartPlay()
     SetGameState(ERSGameState::InProgress);
 
     InitTerminals();
-    UpdateTerminalData();
+    //UpdateTerminalData();
 }
 
 void ARSGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
@@ -53,7 +59,7 @@ void ARSGameMode::InitGame(const FString& MapName, const FString& Options, FStri
     Super::InitGame(MapName, Options, ErrorMessage);
     
     FString SelectedSaveSlot = UGameplayStatics::ParseOption(Options, "SaveGame");
-    if (SelectedSaveSlot.Len() <= 0) return;
+    //if (SelectedSaveSlot.Len() <= 0) return;
     
     URSGameInstance* MyGameInstance = Cast<URSGameInstance>(GetGameInstance());
     if (!MyGameInstance) return;

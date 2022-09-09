@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "MiniGame/MiniGame.h"
 #include "MiniGame/Column.h"
 #include "MiniGame/Cell.h"
@@ -156,6 +155,8 @@ void UMiniGame::ShowTutorial()
 
 bool UMiniGame::NextTutorialSlide()
 {
+    if (TutorialSlides.Num() == 0) return false;
+
     const bool bIsFinished = CurrentSlideIndex == TutorialSlides.Num() - 1;
 
     if (!bIsFinished)
