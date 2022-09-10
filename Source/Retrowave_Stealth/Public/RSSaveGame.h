@@ -18,4 +18,7 @@ public:
 
     UPROPERTY()
     TArray<FActorSaveData> SavedActors;
+
+    UPROPERTY()
+    TArray<FPlayerSaveData> SavedPlayers;
 };

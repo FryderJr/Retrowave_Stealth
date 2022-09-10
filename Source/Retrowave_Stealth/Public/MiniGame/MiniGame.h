@@ -40,7 +40,12 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Tutorial")
     UTexture2D* GetCurrentTutorialSlide() const { return CurrentTutorialSlide; };
 
+    UFUNCTION(BlueprintCallable, Category = "Tutorial")
+    bool IsTutorial() const { return bIsTutorial; };
+
     void StartBlinking();
+
+    void SetConditionAfterLoad(bool bIsHackSucces);
 
 protected:
     UPROPERTY(Transient, meta = (BindWidgetAnim))
@@ -85,6 +90,8 @@ private:
     UPROPERTY()
     UTexture2D* CurrentTutorialSlide;
     uint8 CurrentSlideIndex;
+
+    static bool bIsTutorial;
 
     void PaintAll(const FColor& Color);
 

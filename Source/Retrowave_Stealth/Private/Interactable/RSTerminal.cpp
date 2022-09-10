@@ -8,8 +8,6 @@
 #include "Components/WidgetComponent.h"
 #include "MiniGame/MiniGame.h"
 
-bool ARSTerminal::bIsTipActive = false;
-
 ARSTerminal::ARSTerminal()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -35,7 +33,7 @@ void ARSTerminal::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
-    if (bInFocus && !bIsTipActive)
+    if (bInFocus)
     {
         if (const auto MiniGameWidget = Cast<UMiniGame>(MiniGameComponent->GetUserWidgetObject()))
         {
@@ -97,6 +95,11 @@ void ARSTerminal::OnActorLoaded_Implementation()
 {
     UE_LOG(LogTemp, Display, TEXT("ARSTerminal OnActorLoaded"));
     UE_LOG(LogTemp, Display, TEXT("Active: %s"), (bIsActive ? TEXT("true") : TEXT("false")));
+    if (bIsActive) return;
+    const auto MiniGameWidget = Cast<UMiniGame>(MiniGameComponent->GetUserWidgetObject());
+    if (!MiniGameWidget) return;
+
+    MiniGameWidget->SetConditionAfterLoad(bIsHackedSucces);
 }
 
 void ARSTerminal::OnCheckField(bool bIsValidField)

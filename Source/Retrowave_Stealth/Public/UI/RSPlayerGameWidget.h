@@ -18,6 +18,9 @@ class RETROWAVE_STEALTH_API URSPlayerGameWidget : public UUserWidget
     UFUNCTION(BlueprintCallable)
     FDialogData GetCurrentPhrase() const { return CurrentPhrase; };
 
+    UFUNCTION(BlueprintCallable)
+    void StartDialog(int32 PhreseNumber);
+
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Dialog")
     TArray<FDialogData> Dialog;
@@ -27,6 +30,4 @@ protected:
 private:
     FDialogData CurrentPhrase;
     int32 CurrentPhraseIndex;
-
-    void StartDialog(uint32 PhreseNumber);
 };

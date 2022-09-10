@@ -28,9 +28,6 @@ public:
 
     bool GetHackedStatus() const { return bIsHackedSucces; };
     bool GetWorkingStatus() const { return bIsActive; };
-    
-    UFUNCTION(BlueprintCallable)
-    void ShowTip(bool bEnabled) { bIsTipActive = bEnabled; };
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
@@ -67,8 +64,7 @@ private:
 
     bool bInFocus{false};
 
-    static bool bIsTipActive;
-
+private:
     void OnCheckField(bool bIsValidField);
 
     void OnQuitTerminal();

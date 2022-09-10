@@ -54,3 +54,10 @@ struct FActorSaveData
     UPROPERTY()
     TArray<uint8> ByteData;
 };
+
+USTRUCT(BlueprintType)
+struct FPlayerSaveData
+{
+    UPROPERTY()
+    TArray<uint8> ByteData;
+};

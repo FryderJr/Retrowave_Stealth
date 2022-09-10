@@ -19,7 +19,6 @@ void URSGameInstance::Init()
 
 void URSGameInstance::SaveGame(FTransform PlayerTransform)
 {
-
     if (URSSaveGame* SaveGameInstance = Cast<URSSaveGame>(UGameplayStatics::CreateSaveGameObject(URSSaveGame::StaticClass())))
     {
         SaveGameInstance->SavedActors.Empty();
@@ -52,16 +51,16 @@ void URSGameInstance::SaveGame(FTransform PlayerTransform)
             Actor->Serialize(Ar);
 
             SaveGameInstance->SavedActors.Add(ActorData);
-            UE_LOG(LogTemp, Display, TEXT("URSGameInstance: SaveTerminalData"));
         }
 
         // Set data on the savegame object.
         SaveGameInstance->PlayerTransform = PlayerTransform;
 
         // Start async save process.
-        UGameplayStatics::AsyncSaveGameToSlot(CurrentSaveGame, SaveSlotName, 0, SavedDelegate);
+        UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveSlotName, 0);
     }
 }
+
 
 void URSGameInstance::SavedGame(const FString& SlotName, const int32 UserIndex, bool bSuccess)
 {

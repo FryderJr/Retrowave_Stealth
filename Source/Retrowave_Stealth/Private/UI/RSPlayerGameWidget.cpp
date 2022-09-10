@@ -20,11 +20,9 @@ bool URSPlayerGameWidget::NextPharese()
 void URSPlayerGameWidget::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
-
-    StartDialog(0);
 }
 
-void URSPlayerGameWidget::StartDialog(uint32 PhreseNumber)
+void URSPlayerGameWidget::StartDialog(int32 PhreseNumber)
 {
     if (!Dialog.IsValidIndex(PhreseNumber)) return;
     CurrentPhraseIndex = PhreseNumber;

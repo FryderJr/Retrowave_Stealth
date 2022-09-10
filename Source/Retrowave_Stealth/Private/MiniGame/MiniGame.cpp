@@ -14,6 +14,8 @@
 #include "Engine/World.h"
 #include "GameFramework/Actor.h"
 
+bool UMiniGame::bIsTutorial = true;
+
 void UMiniGame::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
@@ -150,7 +152,8 @@ void UMiniGame::QuitMiniGame()
 
 void UMiniGame::ShowTutorial()
 {
-    PlayAnimation(TutorialAnimation);
+    UE_LOG(LogTemp, Display, TEXT("ShowTutorial: %s"), (bIsTutorial ? TEXT("true") : TEXT("false")));
+    bIsTutorial ? PlayAnimation(TutorialAnimation) : PlayAnimationReverse(TutorialAnimation, 3.f);;
 }
 
 bool UMiniGame::NextTutorialSlide()
@@ -167,14 +170,20 @@ bool UMiniGame::NextTutorialSlide()
     else
     {
         PlayAnimationReverse(TutorialAnimation, 3.f);
+        bIsTutorial = !bIsFinished;
     }
-    
+    UE_LOG(LogTemp, Display, TEXT("Tutorial: %s"), (bIsTutorial ? TEXT("true") : TEXT("false")));
     return bIsFinished;
 }
 
 void UMiniGame::StartBlinking()
 {
     GetWorld()->GetTimerManager().SetTimer(BlinkTimer, this, &UMiniGame::Blink, BlinkingRate, true);
+}
+
+void UMiniGame::SetConditionAfterLoad(bool bIsHackSucces)
+{
+    bIsHackSucces ? PaintAll(FColor::Green) : PaintAll(FColor::Red);
 }
 
 void UMiniGame::Blink()
