@@ -7,8 +7,7 @@
 #include "EngineUtils.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
-
-#include "Interactable/RSTerminal.h"
+#include "Player/RSBaseCharacter.h"
 
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 
@@ -32,11 +31,8 @@ void URSGameInstance::SaveGame(FTransform PlayerTransform)
             AActor* Actor = *It;
             // Only interested in our 'gameplay actors', skip actors that are being destroyed
             // Note: You might instead use a dedicated SavableObject interface for Actors you want to save instead of re-using GameplayInterface
-            if (Actor->IsPendingKill() || !Actor->Implements<URSActorSave>())
-            {
-                continue;
-            }
-
+            if (Actor->IsPendingKill() || Actor->Implements<URSActorSave>()) continue;
+            
             FActorSaveData ActorData;
             ActorData.ActorName = Actor->GetFName();
             ActorData.Transform = Actor->GetActorTransform();
@@ -66,39 +62,6 @@ void URSGameInstance::SavedGame(const FString& SlotName, const int32 UserIndex, 
 {
 
 }
-/*
-void URSGameInstance::SaveTerminalData()
-{
-    if (!CurrentSaveGame) return;   //checknoentry
-    UE_LOG(LogTemp, Display, TEXT("URSGameInstance: SaveTerminalData"));
-    CurrentSaveGame->SavedActors.Empty();
-
-    for (FActorIterator It(GetWorld()); It; ++It)
-    {
-        AActor* Actor = *It;
-        // Only interested in our 'gameplay actors', skip actors that are being destroyed
-        // Note: You might instead use a dedicated SavableObject interface for Actors you want to save instead of re-using GameplayInterface
-        if (!IsValid(Actor) || !Actor->Implements<ARSTerminal>()) continue;
-
-        FActorSaveData ActorData;
-        ActorData.ActorName = Actor->GetFName();
-        ActorData.Transform = Actor->GetActorTransform();
-
-        // Pass the array to fill with data from Actor
-        FMemoryWriter MemWriter(ActorData.ByteData);
-
-        FObjectAndNameAsStringProxyArchive Ar(MemWriter, true);
-        // Find only variables with UPROPERTY(SaveGame)
-        Ar.ArIsSaveGame = true;
-        // Converts Actor's SaveGame UPROPERTIES into binary array
-        Actor->Serialize(Ar);
-
-        CurrentSaveGame->SavedActors.Add(ActorData);
-    }
-
-    UGameplayStatics::SaveGameToSlot(CurrentSaveGame, SaveSlotName, 0);
-}
-*/
 
 void URSGameInstance::LoadGame()
 {
@@ -112,32 +75,54 @@ void URSGameInstance::LoadGame()
             	It->SetActorTransform(LoadedGame->PlayerTransform);
         	}
 
-            if (!Actor->Implements<URSActorSave>()) continue;
-
-            for (FActorSaveData ActorData : LoadedGame->SavedActors)
+            if (Actor->Implements<URSActorSave>())
             {
-                if (ActorData.ActorName == Actor->GetFName())
+                for (FActorSaveData ActorData : LoadedGame->SavedActors)
                 {
-                    UE_LOG(LogTemp, Display, TEXT("URSGameInstance: LoadTerminalData %s"), *Actor->GetName());
+                    if (ActorData.ActorName == Actor->GetFName())
+                    {
+                        UE_LOG(LogTemp, Display, TEXT("URSGameInstance: LoadTerminalData %s"), *Actor->GetName());
 
-                    Actor->SetActorTransform(ActorData.Transform);
+                        Actor->SetActorTransform(ActorData.Transform);
 
-                    FMemoryReader MemReader(ActorData.ByteData);
+                        FMemoryReader MemReader(ActorData.ByteData);
 
-                    FObjectAndNameAsStringProxyArchive Ar(MemReader, true);
-                    Ar.ArIsSaveGame = true;
-                    // Convert binary array back into actor's variables
-                    Actor->Serialize(Ar);
+                        FObjectAndNameAsStringProxyArchive Ar(MemReader, true);
+                        Ar.ArIsSaveGame = true;
+                        // Convert binary array back into actor's variables
+                        Actor->Serialize(Ar);
 
-                    IRSActorSave::Execute_OnActorLoaded(Actor);
+                        IRSActorSave::Execute_OnActorLoaded(Actor);
 
-                    break;
+                        break;
+                    }
                 }
             }
+            if (Actor->Implements<ARSBaseCharacter>())
+            {
+                for (FPlayerSaveData PlayerData : LoadedGame->SavedPlayers)
+                {
+                    if (PlayerData.ActorName == Actor->GetFName())
+                    {
+                        UE_LOG(LogTemp, Display, TEXT("URSGameInstance: LoadPlayerData %s"), *Actor->GetName());
+
+                        FMemoryReader MemReader(PlayerData.ByteData);
+
+                        FObjectAndNameAsStringProxyArchive Ar(MemReader, true);
+                        Ar.ArIsSaveGame = true;
+                        // Convert binary array back into actor's variables
+                        Actor->Serialize(Ar);
+
+                        IRSActorSave::Execute_OnActorLoaded(Actor);
+
+                        break;
+                    }
+                }
+            }
+            
         }
-    }
         //GetPrimaryPlayerController()->GetPawn()->SetActorTransform(LoadedGame->PlayerTransform);
         // The operation was successful, so LoadedGame now contains the data we saved earlier.
-    //UE_LOG(LogTemp, Warning, TEXT("LOADED: (%f, %f, %f)"), LoadedGame->PlayerTransform.GetLocation().X, LoadedGame->PlayerTransform.GetLocation().Y, LoadedGame->PlayerTransform.GetLocation().Z);
-    //}
+    UE_LOG(LogTemp, Warning, TEXT("LOADED: (%f, %f, %f)"), LoadedGame->PlayerTransform.GetLocation().X, LoadedGame->PlayerTransform.GetLocation().Y, LoadedGame->PlayerTransform.GetLocation().Z);
+    }
 }

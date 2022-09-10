@@ -12,22 +12,4 @@ class RETROWAVE_STEALTH_API URSPlayerGameWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
-    UFUNCTION(BlueprintCallable)
-    bool NextPharese();
-
-    UFUNCTION(BlueprintCallable)
-    FDialogData GetCurrentPhrase() const { return CurrentPhrase; };
-
-    UFUNCTION(BlueprintCallable)
-    void StartDialog(int32 PhreseNumber);
-
-protected:
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Dialog")
-    TArray<FDialogData> Dialog;
-
-    virtual void NativeOnInitialized() override;
-
-private:
-    FDialogData CurrentPhrase;
-    int32 CurrentPhraseIndex;
 };

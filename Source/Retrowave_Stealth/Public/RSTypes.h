@@ -58,6 +58,11 @@ struct FActorSaveData
 USTRUCT(BlueprintType)
 struct FPlayerSaveData
 {
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY()
+    FName ActorName;
+
     UPROPERTY()
     TArray<uint8> ByteData;
 };
