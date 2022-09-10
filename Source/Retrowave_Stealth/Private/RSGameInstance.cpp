@@ -7,7 +7,6 @@
 #include "EngineUtils.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
-#include "Player/RSBaseCharacter.h"
 
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 
@@ -57,7 +56,6 @@ void URSGameInstance::SaveGame(FTransform PlayerTransform)
     }
 }
 
-
 void URSGameInstance::SavedGame(const FString& SlotName, const int32 UserIndex, bool bSuccess)
 {
 
@@ -98,28 +96,6 @@ void URSGameInstance::LoadGame()
                     }
                 }
             }
-            if (Actor->Implements<ARSBaseCharacter>())
-            {
-                for (FPlayerSaveData PlayerData : LoadedGame->SavedPlayers)
-                {
-                    if (PlayerData.ActorName == Actor->GetFName())
-                    {
-                        UE_LOG(LogTemp, Display, TEXT("URSGameInstance: LoadPlayerData %s"), *Actor->GetName());
-
-                        FMemoryReader MemReader(PlayerData.ByteData);
-
-                        FObjectAndNameAsStringProxyArchive Ar(MemReader, true);
-                        Ar.ArIsSaveGame = true;
-                        // Convert binary array back into actor's variables
-                        Actor->Serialize(Ar);
-
-                        IRSActorSave::Execute_OnActorLoaded(Actor);
-
-                        break;
-                    }
-                }
-            }
-            
         }
         //GetPrimaryPlayerController()->GetPawn()->SetActorTransform(LoadedGame->PlayerTransform);
         // The operation was successful, so LoadedGame now contains the data we saved earlier.

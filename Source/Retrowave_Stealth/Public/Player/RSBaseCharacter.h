@@ -42,15 +42,7 @@ public:
 
     void SetCurrentInteractableObject(ARSInteractableActor* InteractableActor);
 
-    UFUNCTION(BlueprintCallable)
-    bool GetReadyToTalk() const { return bIsReadyToTalk; };
-    UFUNCTION(BlueprintCallable)
-    void SetReadyToTalk(bool Enabled) { bIsReadyToTalk = Enabled; };
-
 private:
-    UPROPERTY(SaveGame)
-    bool bIsReadyToTalk{true};
-
     UPROPERTY()
     ARSInteractableActor* CurrentInteractableObject{nullptr};
 
