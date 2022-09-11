@@ -27,8 +27,26 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Game")
     FString GetSaveSlotName() const { return SaveSlotName; };
 
+    UFUNCTION(BlueprintCallable, Category = "Score")
+    int32 GetInfoPoints() const { return InfoPoints; };
+
+    UFUNCTION(BlueprintCallable, Category = "Score")
+    void SetInfoPoints(int32 Points);
+
     UFUNCTION(BlueprintCallable, Category = "Game")
     void SaveGame(FTransform PlayerTransform);
+
+    /*
+    * will be called from the BP_Goal
+    */
+    UFUNCTION(BlueprintCallable, Category = "Score")
+    void SaveEndGameState();
+
+    /*
+    * will be called from Menu Level Blueprint
+    */
+    UFUNCTION(BlueprintCallable, Category = "Score")
+    void LoadEndGameState();
 
     UFUNCTION()
     void SavedGame(const FString& SlotName, const int32 UserIndex, bool bSuccess);
@@ -48,11 +66,14 @@ protected:
     FString SaveSlotName = "GameSaveSlot";
     //=====
 
+    UPROPERTY(VisibleAnywhere, Category = "Score")
+    FString EndGameSaveSlotName = "EndGameSlot";
+
     UPROPERTY(VisibleAnywhere, Category = "Game")
     FTransform PlayerLocation;
 
     UPROPERTY(VisibleAnywhere, Category = "Score")
-    uint32 InfoPoints{0};
+    int32 InfoPoints{0};
 
 private:
     // rebase to UGameInstanceSubsystem

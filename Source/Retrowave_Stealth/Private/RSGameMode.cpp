@@ -38,11 +38,11 @@ void ARSGameMode::UpdateTerminalData()
         CurrentTerminalData.HackedSuccesTerminalsNum += Terminal->GetHackedStatus();
     }
 
-    //const auto MyGameInstance = Cast<URSGameInstance>(GetGameInstance());
-    //if (MyGameInstance)
-    //{
-    //    MyGameInstance->SaveTerminalData();
-    //}
+    const auto MyGameInstance = Cast<URSGameInstance>(GetGameInstance());
+    if (MyGameInstance)
+    {
+        MyGameInstance->SetInfoPoints(CurrentTerminalData.TerminalsNum - CurrentTerminalData.ActiveTerminalsNum);
+    }
 }
 
 void ARSGameMode::AddSpottedBy(AActor* Enemy)

@@ -4,6 +4,7 @@
 #include "RSGameInstance.h"
 #include "RSActorSave.h"
 #include "RSSaveGame.h"
+#include "RSEndSaveGame.h"
 #include "EngineUtils.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
@@ -13,6 +14,11 @@
 void URSGameInstance::Init()
 {
     Super::Init();
+}
+
+void URSGameInstance::SetInfoPoints(int32 Points)
+{
+    InfoPoints = Points;
 }
 
 void URSGameInstance::SaveGame(FTransform PlayerTransform)
@@ -56,9 +62,27 @@ void URSGameInstance::SaveGame(FTransform PlayerTransform)
     }
 }
 
+void URSGameInstance::SaveEndGameState()
+{
+    if (URSEndSaveGame* SaveGameInstance = Cast<URSEndSaveGame>(UGameplayStatics::CreateSaveGameObject(URSEndSaveGame::StaticClass())))
+    {
+        SaveGameInstance->TerminalPoints = InfoPoints;
+        UGameplayStatics::SaveGameToSlot(SaveGameInstance, EndGameSaveSlotName, 0);
+        UGameplayStatics::OpenLevel(GetWorld(), GetMenuLevelName(), true);
+    }
+}
+
+void URSGameInstance::LoadEndGameState()
+{
+    if (URSEndSaveGame* LoadedGame = Cast<URSEndSaveGame>(UGameplayStatics::LoadGameFromSlot(EndGameSaveSlotName, 0)))
+    {
+        InfoPoints = LoadedGame->TerminalPoints;
+    }
+}
+
 void URSGameInstance::SavedGame(const FString& SlotName, const int32 UserIndex, bool bSuccess)
 {
-
+    
 }
 
 void URSGameInstance::LoadGame()
