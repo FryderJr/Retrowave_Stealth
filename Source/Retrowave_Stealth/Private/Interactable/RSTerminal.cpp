@@ -7,6 +7,8 @@
 #include "GameFramework/PlayerController.h"
 #include "Components/WidgetComponent.h"
 #include "MiniGame/MiniGame.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 ARSTerminal::ARSTerminal()
 {
@@ -89,6 +91,8 @@ void ARSTerminal::InteractWithObject()
         MiniGameWidget->ShowTutorial();
         MiniGameWidget->StartBlinking();
     }
+    
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), StartHackingSound, GetActorLocation());
 }
 
 void ARSTerminal::OnActorLoaded_Implementation()
@@ -109,6 +113,9 @@ void ARSTerminal::OnCheckField(bool bIsValidField)
     bInFocus = false;
     UE_LOG(LogTemp, Display, TEXT("FieldChecked"));
     OnInteractionStop.Broadcast();
+    
+    const auto ResultSound = bIsValidField ? CorrectPasswordSound : WrongPasswordSound;
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), ResultSound, GetActorLocation());
 }
 
 void ARSTerminal::OnQuitTerminal()
