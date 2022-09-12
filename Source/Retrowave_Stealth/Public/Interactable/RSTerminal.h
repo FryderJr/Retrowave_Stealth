@@ -9,6 +9,7 @@
 class UBoxComponent;
 class UWidgetComponent;
 class ACameraActor;
+class USoundCue;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnInteractionStartSignature, ACameraActor*);
 DECLARE_MULTICAST_DELEGATE(FOnInteractionStopSignature);
@@ -45,6 +46,15 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UWidgetComponent* MiniGameComponent;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+    USoundCue* StartHackingSound;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+    USoundCue* CorrectPasswordSound;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+    USoundCue* WrongPasswordSound;
+    
 	virtual void BeginPlay() override;
     
     virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;

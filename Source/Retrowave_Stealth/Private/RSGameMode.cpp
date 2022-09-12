@@ -86,7 +86,7 @@ void ARSGameMode::StartPlay()
 
     InitTerminals();
 
-    //UpdateTerminalData();
+    UpdateTerminalData();
 }
 
 void ARSGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
