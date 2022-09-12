@@ -12,21 +12,30 @@ void URSLibraryWidget::NativeOnInitialized()
     const auto GI = GetWorld()->GetGameInstance<URSGameInstance>();
     if (GI)
     {
-        //OpendKnowleges = GI->GetInfoPoints();
+        OpenedKnowleges = GI->GetInfoPoints();
     }
 
-    OpendKnowleges = 3;
+    OpenedKnowleges ? 
+        CurrentKnowlege = FoundKnowledges[CurrentKnowlegeIndex] :
+        CurrentKnowlege = DefaultImage;
 
-    if (NextKnowlege)
+    if (NextKnowlegeButton)
     {
-        NextKnowlege->OnClicked.AddDynamic(this, &URSLibraryWidget::OnNextKnowlege);
+        NextKnowlegeButton->OnClicked.AddDynamic(this, &URSLibraryWidget::OnNextKnowlege);
     }
+}
+
+void URSLibraryWidget::GetKnowlegesInfo(int32& KnowlegeIndex, int32& TotalKnowlegesCount) const
+{
+    KnowlegeIndex = CurrentKnowlegeIndex + 1;
+    TotalKnowlegesCount = FoundKnowledges.Num();
 }
 
 void URSLibraryWidget::OnNextKnowlege()
 {
-    if (OpendKnowleges == 0) return;
-    const auto NextIndex = ++CurrentKnowlegeIndex % OpendKnowleges;
+    if (FoundKnowledges.Num() == 0) return;
+    
+    const auto NextIndex = ++CurrentKnowlegeIndex % FoundKnowledges.Num();
     UE_LOG(LogTemp, Display, TEXT("Next"));
     ShowCurrentKnowlege(NextIndex);
 }
@@ -34,6 +43,10 @@ void URSLibraryWidget::OnNextKnowlege()
 void URSLibraryWidget::ShowCurrentKnowlege(int32 Index)
 {
     if (!FoundKnowledges.IsValidIndex(Index)) return;
-    UE_LOG(LogTemp, Display, TEXT("slide∆ %i"), Index);
-    CurrentKnowlege = FoundKnowledges[Index];
+    CurrentKnowlegeIndex = Index;
+    UE_LOG(LogTemp, Display, TEXT("slide %i"), Index);
+
+    Index < OpenedKnowleges ? 
+        CurrentKnowlege = FoundKnowledges[Index] :
+        CurrentKnowlege = DefaultImage;
 }
