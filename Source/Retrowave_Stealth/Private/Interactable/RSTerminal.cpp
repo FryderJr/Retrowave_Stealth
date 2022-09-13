@@ -56,6 +56,10 @@ void ARSTerminal::BeginPlay()
         MiniGameWidget->bIsFocusable = true;
         MiniGameWidget->OnCheckField.AddUObject(this, &ARSTerminal::OnCheckField);
         MiniGameWidget->OnQuitMiniGame.AddUObject(this, &ARSTerminal::OnQuitTerminal);
+        if (!bIsActive)
+        {
+            MiniGameWidget->SetConditionAfterLoad(bIsHackedSucces);
+        }
     }
 }
 
@@ -98,12 +102,6 @@ void ARSTerminal::InteractWithObject()
 void ARSTerminal::OnActorLoaded_Implementation()
 {
     UE_LOG(LogTemp, Display, TEXT("ARSTerminal OnActorLoaded"));
-    UE_LOG(LogTemp, Display, TEXT("Active: %s"), (bIsActive ? TEXT("true") : TEXT("false")));
-    if (bIsActive) return;
-    const auto MiniGameWidget = Cast<UMiniGame>(MiniGameComponent->GetUserWidgetObject());
-    if (!MiniGameWidget) return;
-
-    MiniGameWidget->SetConditionAfterLoad(bIsHackedSucces);
 }
 
 void ARSTerminal::OnCheckField(bool bIsValidField)

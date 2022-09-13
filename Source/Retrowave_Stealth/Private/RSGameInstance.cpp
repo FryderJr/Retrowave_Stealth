@@ -36,7 +36,7 @@ void URSGameInstance::SaveGame(FTransform PlayerTransform)
             AActor* Actor = *It;
             // Only interested in our 'gameplay actors', skip actors that are being destroyed
             // Note: You might instead use a dedicated SavableObject interface for Actors you want to save instead of re-using GameplayInterface
-            if (Actor->IsPendingKill() || Actor->Implements<URSActorSave>()) continue;
+            if (Actor->IsPendingKill() || !Actor->Implements<URSActorSave>()) continue;
             
             FActorSaveData ActorData;
             ActorData.ActorName = Actor->GetFName();

@@ -183,6 +183,7 @@ void UMiniGame::StartBlinking()
 
 void UMiniGame::SetConditionAfterLoad(bool bIsHackSucces)
 {
+    UE_LOG(LogTemp, Display, TEXT("MiniGame hacked: %s"), (bIsHackSucces ? TEXT("true") : TEXT("false")));
     bIsHackSucces ? PaintAll(FColor::Green) : PaintAll(FColor::Red);
 }
 
