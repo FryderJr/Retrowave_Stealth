@@ -43,6 +43,16 @@ ARSBaseCharacter::ARSBaseCharacter()
     CameraCollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 }
 
+void ARSBaseCharacter::SetKilled(bool bNewSet)
+{
+    bKilled = bNewSet;
+    if (!CurrentInteractableObject)
+    {
+        return;
+    }
+    CurrentInteractableObject->StopInteractWithObject();
+}
+
 void ARSBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();

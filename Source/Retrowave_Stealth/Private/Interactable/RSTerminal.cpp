@@ -99,6 +99,11 @@ void ARSTerminal::InteractWithObject()
     UGameplayStatics::PlaySoundAtLocation(GetWorld(), StartHackingSound, GetActorLocation());
 }
 
+void ARSTerminal::StopInteractWithObject()
+{
+    OnQuitTerminal();
+}
+
 void ARSTerminal::OnActorLoaded_Implementation()
 {
     UE_LOG(LogTemp, Display, TEXT("ARSTerminal OnActorLoaded"));

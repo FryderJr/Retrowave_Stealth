@@ -63,6 +63,8 @@ protected:
 
     virtual void InteractWithObject() override;
 
+    virtual void StopInteractWithObject() override;
+
     virtual void OnActorLoaded_Implementation() override;
 
 private:

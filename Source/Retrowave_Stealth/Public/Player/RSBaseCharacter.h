@@ -23,6 +23,12 @@ class RETROWAVE_STEALTH_API ARSBaseCharacter : public ACharacter
 public:
 	ARSBaseCharacter();
 
+    UPROPERTY(BlueprintReadOnly, Category = Player)
+    bool bKilled = false;
+
+    UFUNCTION(BlueprintCallable, Category = Player)
+    void SetKilled(bool bNewSet);
+
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
     USpringArmComponent* SpringArm;
