@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "UI/RSLibraryWidget.h"
 #include "Components/Button.h"
 #include "RSGameInstance.h"
@@ -15,9 +14,14 @@ void URSLibraryWidget::NativeOnInitialized()
         OpenedKnowleges = GI->GetInfoPoints();
     }
 
-    OpenedKnowleges ? 
-        CurrentKnowlege = FoundKnowledges[CurrentKnowlegeIndex] :
-        CurrentKnowlege = DefaultImage;
+    OpenedKnowleges = 3;
+
+    for (uint8 i = 0; i < OpenedKnowleges; ++i)
+    {
+        FoundKnowledges[i].bEnabled = true;
+    }
+    
+    CurrentKnowlege = FoundKnowledges[CurrentKnowlegeIndex];
 
     if (NextKnowlegeButton)
     {
@@ -25,10 +29,9 @@ void URSLibraryWidget::NativeOnInitialized()
     }
 }
 
-void URSLibraryWidget::GetKnowlegesInfo(int32& KnowlegeIndex, int32& TotalKnowlegesCount) const
+void URSLibraryWidget::OnNextKnowlege_BP_Implementation(int32 Index)
 {
-    KnowlegeIndex = CurrentKnowlegeIndex + 1;
-    TotalKnowlegesCount = FoundKnowledges.Num();
+    UE_LOG(LogTemp, Display, TEXT("slide: %i"), Index);
 }
 
 void URSLibraryWidget::OnNextKnowlege()
@@ -46,7 +49,13 @@ void URSLibraryWidget::ShowCurrentKnowlege(int32 Index)
     CurrentKnowlegeIndex = Index;
     UE_LOG(LogTemp, Display, TEXT("slide %i"), Index);
 
-    Index < OpenedKnowleges ? 
-        CurrentKnowlege = FoundKnowledges[Index] :
-        CurrentKnowlege = DefaultImage;
+    for (auto& Knowlege : FoundKnowledges)
+    {
+        Knowlege.bIsActive = false;
+    }
+    CurrentKnowlege = FoundKnowledges[Index];
+    CurrentKnowlege.bIsActive = true;
+
+    OnNextKnowlege_BP(Index);
 }
+

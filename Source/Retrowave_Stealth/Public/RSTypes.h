@@ -4,6 +4,8 @@
 
 #include "RSTypes.generated.h"
 
+class UTexture2D;
+
 UENUM(BlueprintType)
 enum class ERSGameState : uint8
 {
@@ -65,4 +67,22 @@ struct FPlayerSaveData
 
     UPROPERTY()
     TArray<uint8> ByteData;
+};
+
+USTRUCT(BlueprintType)
+struct FKnowlegeData
+{
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    bool bIsActive{false};
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    bool bEnabled{false};
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    UTexture2D* TitleImage;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    UTexture2D* TextImage;
 };

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Templates/Tuple.h"
+#include "RSTypes.h"
 #include "RSLibraryWidget.generated.h"
 
 class UTexture2D;
@@ -19,27 +19,27 @@ public:
     virtual void NativeOnInitialized() override;
 
     UFUNCTION(BlueprintCallable)
-    UTexture2D* GetCurrentKnowlege() const { return CurrentKnowlege; };
+    FKnowlegeData GetCurrentKnowlege() const { return CurrentKnowlege; };
 
     UFUNCTION(BlueprintCallable)
-    void GetKnowlegesInfo(int32& CurrentKnowlegeIndex, int32& TotalKnowlegesCount) const;
+    int32 GetCurrentKnowlegeIndex() const { return CurrentKnowlegeIndex; };
+
+    UFUNCTION(BlueprintNativeEvent)
+    void OnNextKnowlege_BP(int32 Index);
 
 protected:
     UPROPERTY(meta = (BindWidget))
     UButton* NextKnowlegeButton;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Knowledges")
-    TArray<UTexture2D*> FoundKnowledges;
+    TArray<FKnowlegeData> FoundKnowledges;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Knowledges")
-    UTexture2D* DefaultImage;
-	
 private:
     int32 OpenedKnowleges{0};
     int32 CurrentKnowlegeIndex{0};
     
     UPROPERTY()
-    UTexture2D* CurrentKnowlege;
+    FKnowlegeData CurrentKnowlege;
 
     void ShowCurrentKnowlege(int32 Index);
 
