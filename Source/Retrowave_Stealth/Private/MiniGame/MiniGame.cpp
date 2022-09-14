@@ -57,9 +57,30 @@ void UMiniGame::CreateKeyword()
 	{
         Keyword += RandomChar();
 	}
+
+    if (KeywordBox)
+    {
+        KeywordBox->ClearChildren();
+        for (uint8 j = 0; j < KeywordLength; j++)
+        {
+            const auto KeywordWidget = CreateWidget<UUserWidget>(GetWorld(), CellWidgetClass);
+            const auto Cell = Cast<UCell>(KeywordWidget);
+            if (!Cell) continue;
+
+            Cell->CellText->SetText(FText::FromString(FString(1, &Keyword[j])));
+            Cell->CellText->SetColorAndOpacity(FSlateColor(FLinearColor(FColor::White)));
+            FSlateBrush NewBrush = FSlateBrush(Cell->Background->Brush);
+            NewBrush.TintColor = FSlateColor(FLinearColor(FColor::Transparent));
+            Cell->Background->SetBrush(NewBrush);
+
+            KeywordBox->AddChild(Cell);
+        }
+    }
+
     if (KeywordToFind)
     {
-        KeywordToFind->SetText(FText::FromString(Keyword));
+        //KeywordToFind->SetText(FText::FromString(Keyword));
+        KeywordToFind->SetText(FText::FromString(""));
     }
 }
 

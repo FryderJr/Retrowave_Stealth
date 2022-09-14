@@ -9,6 +9,7 @@
 class UTextBlock;
 class URow;
 class UTexture2D;
+class UHorizontalBox;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCheckFieldSignature, bool);
 DECLARE_MULTICAST_DELEGATE(FOnQuitMiniGameSignature);
@@ -59,6 +60,12 @@ protected:
 
     UPROPERTY(meta = (BindWidget))
     UTextBlock* KeywordToFind;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> CellWidgetClass;
+
+    UPROPERTY(meta = (BindWidget))
+    UHorizontalBox* KeywordBox;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MiniGame)
     int KeywordLength = 5;
