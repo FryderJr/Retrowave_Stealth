@@ -67,7 +67,7 @@ void URSGameInstance::SaveEndGameState()
     if (URSEndSaveGame* SaveGameInstance = Cast<URSEndSaveGame>(UGameplayStatics::CreateSaveGameObject(URSEndSaveGame::StaticClass())))
     {
         SaveGameInstance->TerminalPoints = InfoPoints;
-        UGameplayStatics::SaveGameToSlot(SaveGameInstance, EndGameSaveSlotName, 0);
+        bool bGameSaved = UGameplayStatics::SaveGameToSlot(SaveGameInstance, EndGameSaveSlotName, 0);
         UGameplayStatics::OpenLevel(GetWorld(), GetMenuLevelName(), true);
     }
 }
@@ -76,7 +76,10 @@ void URSGameInstance::LoadEndGameState()
 {
     if (URSEndSaveGame* LoadedGame = Cast<URSEndSaveGame>(UGameplayStatics::LoadGameFromSlot(EndGameSaveSlotName, 0)))
     {
-        InfoPoints = LoadedGame->TerminalPoints;
+        if (LoadedGame->TerminalPoints > InfoPoints)
+        {
+            InfoPoints = LoadedGame->TerminalPoints;
+        }
     }
 }
 
