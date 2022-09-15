@@ -71,7 +71,7 @@ protected:
     int KeywordLength = 5;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MiniGame)
-    float BlinkingRate = 4.f;
+    float BlinkingRate = 6.f;
     
     virtual void NativeOnInitialized() override;
 

@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "UI/RSLibraryWidget.h"
 #include "Components/Button.h"
 #include "RSGameInstance.h"
@@ -15,20 +14,29 @@ void URSLibraryWidget::NativeOnInitialized()
         OpenedKnowleges = GI->GetInfoPoints();
     }
 
-    OpenedKnowleges ? 
-        CurrentKnowlege = FoundKnowledges[CurrentKnowlegeIndex] :
-        CurrentKnowlege = DefaultImage;
+    OpenedKnowleges = 3;
+
+    for (uint8 i = 0; i < OpenedKnowleges; ++i)
+    {
+        FoundKnowledges[i].bEnabled = true;
+    }
+    
+    CurrentKnowlege = FoundKnowledges[CurrentKnowlegeIndex];
 
     if (NextKnowlegeButton)
     {
         NextKnowlegeButton->OnClicked.AddDynamic(this, &URSLibraryWidget::OnNextKnowlege);
     }
+
+    if (PrevKnowlegeButton)
+    {
+        PrevKnowlegeButton->OnClicked.AddDynamic(this, &URSLibraryWidget::OnPrevKnowlege);
+    }
 }
 
-void URSLibraryWidget::GetKnowlegesInfo(int32& KnowlegeIndex, int32& TotalKnowlegesCount) const
+void URSLibraryWidget::OnShowCurrentKnowlege_BP_Implementation(int32 Index)
 {
-    KnowlegeIndex = CurrentKnowlegeIndex + 1;
-    TotalKnowlegesCount = FoundKnowledges.Num();
+    UE_LOG(LogTemp, Display, TEXT("slide: %i"), Index);
 }
 
 void URSLibraryWidget::OnNextKnowlege()
@@ -36,7 +44,19 @@ void URSLibraryWidget::OnNextKnowlege()
     if (FoundKnowledges.Num() == 0) return;
     
     const auto NextIndex = ++CurrentKnowlegeIndex % FoundKnowledges.Num();
-    UE_LOG(LogTemp, Display, TEXT("Next"));
+    ShowCurrentKnowlege(NextIndex);
+}
+
+void URSLibraryWidget::OnPrevKnowlege()
+{
+    if (FoundKnowledges.Num() == 0) return;
+
+    --CurrentKnowlegeIndex;
+    if (CurrentKnowlegeIndex < 0)
+    {
+        CurrentKnowlegeIndex = FoundKnowledges.Num() - 1;
+    }
+    const auto NextIndex = CurrentKnowlegeIndex % FoundKnowledges.Num();
     ShowCurrentKnowlege(NextIndex);
 }
 
@@ -46,7 +66,13 @@ void URSLibraryWidget::ShowCurrentKnowlege(int32 Index)
     CurrentKnowlegeIndex = Index;
     UE_LOG(LogTemp, Display, TEXT("slide %i"), Index);
 
-    Index < OpenedKnowleges ? 
-        CurrentKnowlege = FoundKnowledges[Index] :
-        CurrentKnowlege = DefaultImage;
+    for (auto& Knowlege : FoundKnowledges)
+    {
+        Knowlege.bIsActive = false;
+    }
+    CurrentKnowlege = FoundKnowledges[Index];
+    CurrentKnowlege.bIsActive = true;
+
+    OnShowCurrentKnowlege_BP(Index);
 }
+
