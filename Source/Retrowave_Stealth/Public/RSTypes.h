@@ -81,8 +81,8 @@ struct FKnowlegeData
     bool bEnabled{false};
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
-    UTexture2D* TitleImage;
+    UTexture2D* TitleImage{nullptr};
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
-    UTexture2D* TextImage;
+    UTexture2D* TextImage{nullptr};
 };
