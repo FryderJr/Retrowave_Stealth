@@ -16,6 +16,18 @@ void URSGameInstance::Init()
     Super::Init();
 }
 
+void URSGameInstance::SetMusicVolume(float MusicVolume)
+{
+    PercentMusicVolume = MusicVolume;
+    OnSetMusicVolume(PercentMusicVolume);
+}
+
+void URSGameInstance::SetSfxVolume(float SfxVolume)
+{
+    PercentSfxVolume = SfxVolume;
+    OnSetSfxVolume(PercentSfxVolume);
+}
+
 void URSGameInstance::SetInfoPoints(int32 Points)
 {
     InfoPoints = Points;
@@ -59,6 +71,7 @@ void URSGameInstance::SaveGame(FTransform PlayerTransform)
 
         // Start async save process.
         UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveSlotName, 0);
+        UE_LOG(LogTemp, Display, TEXT("SaveGame"));
     }
 }
 
@@ -124,6 +137,10 @@ void URSGameInstance::LoadGame()
                 }
             }
         }
+
+        // Load sound setting
+        SetMusicVolume(PercentMusicVolume);
+        SetSfxVolume(PercentSfxVolume);
         //GetPrimaryPlayerController()->GetPawn()->SetActorTransform(LoadedGame->PlayerTransform);
         // The operation was successful, so LoadedGame now contains the data we saved earlier.
     UE_LOG(LogTemp, Warning, TEXT("LOADED: (%f, %f, %f)"), LoadedGame->PlayerTransform.GetLocation().X, LoadedGame->PlayerTransform.GetLocation().Y, LoadedGame->PlayerTransform.GetLocation().Z);
