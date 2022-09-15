@@ -27,9 +27,14 @@ void URSLibraryWidget::NativeOnInitialized()
     {
         NextKnowlegeButton->OnClicked.AddDynamic(this, &URSLibraryWidget::OnNextKnowlege);
     }
+
+    if (PrevKnowlegeButton)
+    {
+        PrevKnowlegeButton->OnClicked.AddDynamic(this, &URSLibraryWidget::OnPrevKnowlege);
+    }
 }
 
-void URSLibraryWidget::OnNextKnowlege_BP_Implementation(int32 Index)
+void URSLibraryWidget::OnShowCurrentKnowlege_BP_Implementation(int32 Index)
 {
     UE_LOG(LogTemp, Display, TEXT("slide: %i"), Index);
 }
@@ -39,7 +44,19 @@ void URSLibraryWidget::OnNextKnowlege()
     if (FoundKnowledges.Num() == 0) return;
     
     const auto NextIndex = ++CurrentKnowlegeIndex % FoundKnowledges.Num();
-    UE_LOG(LogTemp, Display, TEXT("Next"));
+    ShowCurrentKnowlege(NextIndex);
+}
+
+void URSLibraryWidget::OnPrevKnowlege()
+{
+    if (FoundKnowledges.Num() == 0) return;
+
+    --CurrentKnowlegeIndex;
+    if (CurrentKnowlegeIndex < 0)
+    {
+        CurrentKnowlegeIndex = FoundKnowledges.Num() - 1;
+    }
+    const auto NextIndex = CurrentKnowlegeIndex % FoundKnowledges.Num();
     ShowCurrentKnowlege(NextIndex);
 }
 
@@ -56,6 +73,6 @@ void URSLibraryWidget::ShowCurrentKnowlege(int32 Index)
     CurrentKnowlege = FoundKnowledges[Index];
     CurrentKnowlege.bIsActive = true;
 
-    OnNextKnowlege_BP(Index);
+    OnShowCurrentKnowlege_BP(Index);
 }
 

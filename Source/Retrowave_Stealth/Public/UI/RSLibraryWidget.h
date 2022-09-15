@@ -25,11 +25,14 @@ public:
     int32 GetCurrentKnowlegeIndex() const { return CurrentKnowlegeIndex; };
 
     UFUNCTION(BlueprintNativeEvent)
-    void OnNextKnowlege_BP(int32 Index);
+    void OnShowCurrentKnowlege_BP(int32 Index);
 
 protected:
     UPROPERTY(meta = (BindWidget))
     UButton* NextKnowlegeButton;
+
+    UPROPERTY(meta = (BindWidget))
+    UButton* PrevKnowlegeButton;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Knowledges")
     TArray<FKnowlegeData> FoundKnowledges;
@@ -41,8 +44,11 @@ private:
     UPROPERTY()
     FKnowlegeData CurrentKnowlege;
 
-    void ShowCurrentKnowlege(int32 Index);
-
     UFUNCTION()
     void OnNextKnowlege();
+
+    UFUNCTION()
+    void OnPrevKnowlege();
+
+    void ShowCurrentKnowlege(int32 Index);
 };
