@@ -25,6 +25,24 @@ public:
     FName GetMenuLevelName() const { return MenuLevelName; };
 
     UFUNCTION(BlueprintCallable, Category = "Game")
+    float GetMusicVolume() const { return PercentMusicVolume; };
+
+    UFUNCTION(BlueprintCallable, Category = "Game")
+    float GetSfxVolume() const { return PercentSfxVolume; };
+
+    UFUNCTION(BlueprintCallable, Category = "Game")
+    void SetMusicVolume(float MusicVolume);
+
+    UFUNCTION(BlueprintCallable, Category = "Game")
+    void SetSfxVolume(float SfxVolume);
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Game")
+    void OnSetMusicVolume(float MusicVolume);
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Game")
+    void OnSetSfxVolume(float SfxVolume);
+
+    UFUNCTION(BlueprintCallable, Category = "Game")
     FString GetSaveSlotName() const { return SaveSlotName; };
 
     UFUNCTION(BlueprintCallable, Category = "Score")
@@ -75,6 +93,9 @@ protected:
     UPROPERTY(VisibleAnywhere, Category = "Score")
     int32 InfoPoints{0};
 
+    float PercentMusicVolume = 0.8f;
+
+    float PercentSfxVolume = 0.8f;
 private:
     // rebase to UGameInstanceSubsystem
     UPROPERTY()
