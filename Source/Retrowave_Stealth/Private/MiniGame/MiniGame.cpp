@@ -61,26 +61,43 @@ void UMiniGame::CreateKeyword()
     if (KeywordBox)
     {
         KeywordBox->ClearChildren();
-        for (uint8 j = 0; j < KeywordLength; j++)
+        //for (uint8 j = 0; j < KeywordLength; j++)
+        //{
+        //    const auto KeywordWidget = CreateWidget<UUserWidget>(GetWorld(), CellWidgetClass);
+        //    const auto Cell = Cast<UCell>(KeywordWidget);
+        //    if (!Cell) continue;
+
+        //    Cell->CellText->SetText(FText::FromString(FString(1, &Keyword[j])));
+        //    Cell->CellText->SetColorAndOpacity(FSlateColor(FLinearColor(FColor::White)));
+        //    FSlateBrush NewBrush = FSlateBrush(Cell->Background->Brush);
+        //    NewBrush.TintColor = FSlateColor(FLinearColor(FColor::Transparent));
+        //    Cell->Background->SetBrush(NewBrush);
+
+        //    KeywordBox->AddChild(Cell);
+        //}
+    }
+
+    FString Result;
+    FString Separator = "  ";
+    bool    First = true;
+    for (const auto& Element : Keyword)
+    {
+        if (First)
         {
-            const auto KeywordWidget = CreateWidget<UUserWidget>(GetWorld(), CellWidgetClass);
-            const auto Cell = Cast<UCell>(KeywordWidget);
-            if (!Cell) continue;
-
-            Cell->CellText->SetText(FText::FromString(FString(1, &Keyword[j])));
-            Cell->CellText->SetColorAndOpacity(FSlateColor(FLinearColor(FColor::White)));
-            FSlateBrush NewBrush = FSlateBrush(Cell->Background->Brush);
-            NewBrush.TintColor = FSlateColor(FLinearColor(FColor::Transparent));
-            Cell->Background->SetBrush(NewBrush);
-
-            KeywordBox->AddChild(Cell);
+            First = false;
         }
+        else
+        {
+            Result += Separator;
+        }
+
+        Result += Element;
     }
 
     if (KeywordToFind)
     {
         //KeywordToFind->SetText(FText::FromString(Keyword));
-        KeywordToFind->SetText(FText::FromString(""));
+        KeywordToFind->SetText(FText::FromString(Result));
     }
 }
 

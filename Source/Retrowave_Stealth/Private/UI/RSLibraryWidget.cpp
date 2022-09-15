@@ -14,8 +14,6 @@ void URSLibraryWidget::NativeOnInitialized()
         OpenedKnowleges = GI->GetInfoPoints();
     }
 
-    OpenedKnowleges = 3;
-
     for (uint8 i = 0; i < OpenedKnowleges; ++i)
     {
         FoundKnowledges[i].bEnabled = true;
