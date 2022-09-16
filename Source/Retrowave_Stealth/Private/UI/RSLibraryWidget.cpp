@@ -14,9 +14,10 @@ void URSLibraryWidget::NativeOnInitialized()
         OpenedKnowleges = GI->GetInfoPoints();
     }
 
-    for (uint8 i = 0; i < OpenedKnowleges; ++i)
+    for (auto& Knowlege : FoundKnowledges)
     {
-        FoundKnowledges[i].bEnabled = true;
+        if (!OpenedKnowleges) break;
+        Knowlege.bEnabled = true;
     }
     
     CurrentKnowlege = FoundKnowledges[CurrentKnowlegeIndex];
