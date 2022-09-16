@@ -66,4 +66,3 @@ void ARSPlayerController::OnInteractionStop()
 {
     SetViewTargetWithBlend(GetPawn(), CameraBlendTime, EViewTargetBlendFunction::VTBlend_Linear, 0.f, true);
 }
-

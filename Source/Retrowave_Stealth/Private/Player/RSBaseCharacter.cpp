@@ -66,7 +66,6 @@ void ARSBaseCharacter::BeginPlay()
 void ARSBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void ARSBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
